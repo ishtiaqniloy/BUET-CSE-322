@@ -1,0 +1,13 @@
+HELO DESKTOP1
+MAIL FROM:ishtiaq_niloy@yahoo.com
+RCPT TO:ishtiaq.niloy@gmail.com
+DATA
+Subject: Sample
+From: ishtiaq_niloy@yahoo.com
+To: ishtiaq.niloy@gmail.com
+
+MSG BODY
+ANOTHER LINE
+BYE
+.
+QUIT

@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 
-public class SMTP_Client {
+public class SMTP_Ideal {
 
     public static void main(String[] args) throws UnknownHostException, IOException {
         String mailServer = "webmail.buet.ac.bd";
@@ -28,6 +28,7 @@ public class SMTP_Client {
         System.out.println(initialID);
 
         pr.println("HELO "+localHost.getHostName());
+        //System.out.println("HELO "+localHost.getHostName());
         pr.flush();
         String welcome = in.readLine();
         System.out.println(welcome);
@@ -46,7 +47,7 @@ public class SMTP_Client {
 
         pr.println("DATA");
         pr.println("Subject: Sample");
-        pr.println("From: abcd@gmail.com");
+        pr.println("From: ishtiaq_niloy@yahoo.com");
         pr.println("To: ishtiaq.niloy@gmail.com");
         pr.println("");
 
