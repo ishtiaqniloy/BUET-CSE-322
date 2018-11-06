@@ -43,9 +43,6 @@ public class SMTP_FileInput1 {
                 if(replyFromServer.charAt(0)=='2'){
                     state = "BEGIN";
                 }
-                else{
-                    state = "CLOSED";
-                }
 
                 System.out.println("State : " + state);
             }
@@ -55,20 +52,32 @@ public class SMTP_FileInput1 {
             while(sc.hasNextLine()){
                 System.out.println();
                 fileStr = sc.nextLine();
+                fileStr = fileStr.trim();
                 System.out.println("Input from file : " + fileStr);
 
                 pr.println(fileStr);
                 pr.flush();
                 replyFromServer="";
-                if(!state.equalsIgnoreCase("WRITING MAIL")){
+                if(!state.equalsIgnoreCase("WRITING MAIL") || fileStr.equalsIgnoreCase(".")){
                     replyFromServer = in.readLine();
+                    replyFromServer = replyFromServer.trim();
+
                 }
 
 
 
+
                 if(replyFromServer!=null){
-                    if(!state.equalsIgnoreCase("WRITING MAIL")){
+                    if(!state.equalsIgnoreCase("WRITING MAIL") || fileStr.equalsIgnoreCase(".")){
                         System.out.println("Server Reply : " + replyFromServer);
+                        ///APPROPRIATE MSG
+
+                        if(fileStr.equalsIgnoreCase("QUIT")){
+                            state = "CLOSED";
+                            smtpSocket.close();
+                            return;
+                        }
+
                     }
 
                     if(state.equalsIgnoreCase("CLOSED")){
@@ -103,28 +112,30 @@ public class SMTP_FileInput1 {
                     else if(state.equalsIgnoreCase("WRITING MAIL")){
                         if (fileStr.equalsIgnoreCase(".")){
                             state= "READY TO DELIVER";
+                            System.out.println("State : " + state);
+
+                            if(!(replyFromServer.charAt(0)=='2' )){
+                                state = "ATTEMPT TO DELIVER";
+                            }
+                            else{
+                                state= "WAIT";
+                            }
                         }
                     }
                     else if(state.equalsIgnoreCase("READY TO DELIVER")){
-
+                        if (fileStr.startsWith("MAIL FROM:") && replyFromServer.charAt(0)=='2'){
+                            state= "ENVELOPE CREATED, NO RECIPIENTS";
+                        }
                     }
                     else if(state.equalsIgnoreCase("ATTEMPT TO DELIVER")){
-
+                        System.out.println("ERROR OCCURRED");
+                        //?
                     }
-//                    else if(state.equalsIgnoreCase("ERROR")){
-//
-//                    }
-//                    else if(state.equalsIgnoreCase("FAILURE")){
-//
-//                    }
-//                    else if(state.equalsIgnoreCase("UNKNOWN")){
-//
-//                    }
+
 
                 }
                 else {
                     System.out.println("Server Reply : " + "NULL");
-                    //state = "UNKNOWN";
                 }
 
 
