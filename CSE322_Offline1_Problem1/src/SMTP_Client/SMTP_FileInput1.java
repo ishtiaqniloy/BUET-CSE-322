@@ -11,7 +11,7 @@ public class SMTP_FileInput1 {
 
     private static final String mailServer = "webmail.buet.ac.bd";
     private static final int portNum = 25;
-    private static final String inputFile = "input1.txt";
+    private static final String inputFile = "input2.txt";
     private static String state = "CLOSED";
 
     public static void main(String[] args) {
@@ -59,12 +59,18 @@ public class SMTP_FileInput1 {
 
                 pr.println(fileStr);
                 pr.flush();
+                replyFromServer="";
+                if(!state.equalsIgnoreCase("WRITING MAIL")){
+                    replyFromServer = in.readLine();
+                }
 
-                replyFromServer = in.readLine();
 
 
                 if(replyFromServer!=null){
-                    System.out.println("Server Reply : " + replyFromServer);
+                    if(!state.equalsIgnoreCase("WRITING MAIL")){
+                        System.out.println("Server Reply : " + replyFromServer);
+                    }
+
                     if(state.equalsIgnoreCase("CLOSED")){
                         System.out.println("Not connected to mail server");
                     }
@@ -87,10 +93,7 @@ public class SMTP_FileInput1 {
                         }
                     }
                     else if(state.equalsIgnoreCase("RECIPIENTS SET")){
-//                   if (fileStr.startsWith("RCPT TO:") && replyFromServer.charAt(0)=='2'){
-//                            state= "RECIPIENTS SET";
-//                        }
-                        if (fileStr.equalsIgnoreCase("DATA") && replyFromServer.charAt(0)=='2'){
+                        if (fileStr.equalsIgnoreCase("DATA") ){ //&& replyFromServer.charAt(0)=='2'
                             state= "WRITING MAIL";
                         }
                         else if (fileStr.startsWith("RSET")){
@@ -108,21 +111,20 @@ public class SMTP_FileInput1 {
                     else if(state.equalsIgnoreCase("ATTEMPT TO DELIVER")){
 
                     }
-
-                    else if(state.equalsIgnoreCase("ERROR")){
-
-                    }
-                    else if(state.equalsIgnoreCase("FAILURE")){
-
-                    }
-                    else if(state.equalsIgnoreCase("UNKNOWN")){
-
-                    }
+//                    else if(state.equalsIgnoreCase("ERROR")){
+//
+//                    }
+//                    else if(state.equalsIgnoreCase("FAILURE")){
+//
+//                    }
+//                    else if(state.equalsIgnoreCase("UNKNOWN")){
+//
+//                    }
 
                 }
                 else {
                     System.out.println("Server Reply : " + "NULL");
-                    state = "UNKNOWN";
+                    //state = "UNKNOWN";
                 }
 
 

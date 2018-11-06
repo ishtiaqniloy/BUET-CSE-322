@@ -33,7 +33,7 @@ public class SMTP_Ideal {
         String welcome = in.readLine();
         System.out.println(welcome);
 
-        pr.println("MAIL FROM:ishtiaq_niloy@yahoo.com");
+        pr.println("MAIL FROM:abcd@gmail.com");
         pr.flush();
         welcome = in.readLine();
         System.out.println(welcome);
@@ -47,7 +47,7 @@ public class SMTP_Ideal {
 
         pr.println("DATA");
         pr.println("Subject: Sample");
-        pr.println("From: ishtiaq_niloy@yahoo.com");
+        pr.println("From: abcd@gmail.com");
         pr.println("To: ishtiaq.niloy@gmail.com");
         pr.println("");
 

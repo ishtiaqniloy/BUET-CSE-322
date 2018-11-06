@@ -1,9 +1,9 @@
 HELO DESKTOP1
-MAIL FROM:ishtiaq_niloy@yahoo.com
-RCPT TO:ishtiaq.niloy@gmail.com
+MAIL FROM:abcd@gmail.com
+RCPT TO:ishtiaq_niloy@live.com
 DATA
 Subject: Sample
-From: ishtiaq_niloy@yahoo.com
+From: abcd@gmail.com
 To: ishtiaq.niloy@gmail.com
 
 MSG BODY
