@@ -1,10 +1,9 @@
 package SMTP_Client;
 
 import java.io.*;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.Scanner;
+import java.util.concurrent.TimeoutException;
 
 
 public class SMTP_FileInput1 {
@@ -12,7 +11,9 @@ public class SMTP_FileInput1 {
     private static final String mailServer = "webmail.buet.ac.bd";
     private static final int portNum = 25;
     private static final String inputFile = "input2.txt";
+    private static final int timeout = 20000;
     private static String state = "CLOSED";
+
 
     public static void main(String[] args) {
 
@@ -32,12 +33,15 @@ public class SMTP_FileInput1 {
             while (state.equalsIgnoreCase("CLOSED")){
                 System.out.println("Attempting to connect to mail server :" + mailServer);
 
-                smtpSocket = new Socket(mailHost,portNum);
+                smtpSocket = new Socket();
+                smtpSocket.connect(new InetSocketAddress(mailHost.getHostAddress(), portNum), timeout);
+                //smtpSocket = new Socket(mailHost,portNum);
 
                 in =  new BufferedReader(new InputStreamReader(smtpSocket.getInputStream()));
                 pr = new PrintWriter(smtpSocket.getOutputStream(),true);
 
-                replyFromServer = in.readLine();
+                replyFromServer = readWithTimeout(in, timeout);
+                replyFromServer = replyFromServer.trim();
                 System.out.println("Connection Reply : " + replyFromServer);
 
                 if(replyFromServer.charAt(0)=='2'){
@@ -46,6 +50,8 @@ public class SMTP_FileInput1 {
 
                 System.out.println("State : " + state);
             }
+
+            //replyFromServer = readWithTimeout(in, timeout);//for checking timeout
 
             Scanner sc = new Scanner(new File(".\\" + inputFile));
 
@@ -59,7 +65,7 @@ public class SMTP_FileInput1 {
                 pr.flush();
                 replyFromServer="";
                 if(!state.equalsIgnoreCase("WRITING MAIL") || fileStr.equalsIgnoreCase(".")){
-                    replyFromServer = in.readLine();
+                    replyFromServer = readWithTimeout(in, timeout);
                     replyFromServer = replyFromServer.trim();
 
                 }
@@ -146,10 +152,28 @@ public class SMTP_FileInput1 {
 
             }
         }
+        catch (SocketTimeoutException ste){
+            System.out.println("Socket Connection Timeout  of " + timeout + "milliseconds occurred");
+        }
+        catch (TimeoutException te){
+            System.out.println("Timeout of " + timeout + "milliseconds occurred");
+        }
         catch (Exception e){
             e.printStackTrace();
         }
 
+
+    }
+
+    public static String readWithTimeout(BufferedReader bufferedReader, int timeoutInMili) throws TimeoutException, IOException {
+        long maxTimeInMili =   System.currentTimeMillis() + timeoutInMili;
+        while (System.currentTimeMillis() < maxTimeInMili){
+            if(bufferedReader.ready()){
+                String str = bufferedReader.readLine();
+                return str;
+            }
+        }
+        throw  new TimeoutException();
 
     }
 }
