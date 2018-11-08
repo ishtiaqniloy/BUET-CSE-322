@@ -10,7 +10,7 @@ public class SMTP_FileInput1 {
 
     private static final String mailServer = "webmail.buet.ac.bd";
     private static final int portNum = 25;
-    private static final String inputFile = "input2.txt";
+    private static final String inputFile = "message.txt";
     private static final int timeout = 20000;
     private static String state = "CLOSED";
 
@@ -177,3 +177,4 @@ public class SMTP_FileInput1 {
 
     }
 }
+//Attachment needs to be handled tomorrow morning.

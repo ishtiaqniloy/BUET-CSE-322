@@ -7,7 +7,6 @@ DATA
 Subject: Sample
 From: abcd@gmail.com
 To: ishtiaq.niloy@gmail.com , ishtiaq_niloy@live.com , ishtiaq_niloy@yahoo.com
-
 MSG BODY
 ANOTHER LINE
 BYE
