@@ -43,6 +43,7 @@ public class SMTP_FileInput1 {
                 replyFromServer = readWithTimeout(in, timeout);
                 replyFromServer = replyFromServer.trim();
                 System.out.println("Connection Reply : " + replyFromServer);
+                System.out.println("Message from server : " + getAppropriateMessage(replyFromServer));
 
                 if(replyFromServer.charAt(0)=='2'){
                     state = "BEGIN";
@@ -76,8 +77,7 @@ public class SMTP_FileInput1 {
                 if(replyFromServer!=null){
                     if(!state.equalsIgnoreCase("WRITING MAIL") || fileStr.equalsIgnoreCase(".")){
                         System.out.println("Server Reply : " + replyFromServer);
-                        ///APPROPRIATE MSG
-
+                        System.out.println("Message from server : " + getAppropriateMessage(replyFromServer));
 
                         if(fileStr.equalsIgnoreCase("QUIT")){
                             state = "CLOSED";
@@ -153,6 +153,9 @@ public class SMTP_FileInput1 {
 
             }
         }
+        catch (UnknownHostException uhe){
+            System.out.println("Unknown Host Exception Occurred. Cannot find mail server.\nTerminating...");
+        }
         catch (SocketTimeoutException ste){
             System.out.println("Socket Connection Timeout  of " + timeout + "milliseconds occurred");
         }
@@ -177,6 +180,78 @@ public class SMTP_FileInput1 {
         throw  new TimeoutException();
 
 
+    }
+
+    static String getAppropriateMessage(String replyFromServer){
+        String codeMsg;
+        if(replyFromServer.startsWith("211")){
+            codeMsg = "211 System status, or system help reply.";
+        }
+        else if(replyFromServer.startsWith("214")){
+            codeMsg = "214 Help message.";
+        }
+        else if(replyFromServer.startsWith("220")){
+            codeMsg = "220 " + mailServer + " Service ready.\n";
+        }
+        else if(replyFromServer.startsWith("221")){
+            codeMsg = "221 " + mailServer + " Service closing transmission channel.\n";
+        }
+        else if(replyFromServer.startsWith("250")){
+            codeMsg = "250 Requested mail action okay, completed.";
+        }
+        else if(replyFromServer.startsWith("251")){
+            codeMsg = "251 User not local; will forward to <forward-path>.";
+        }
+        else if(replyFromServer.startsWith("354")){
+            codeMsg = "354 Start mail input; end with <CRLF>.<CRLF>.";
+        }
+        else if(replyFromServer.startsWith("421")){
+            codeMsg = "421" + mailServer + " Service not available, closing transmission channel. [This may be a reply to any command if the service knows it must shut down].";
+        }
+        else if(replyFromServer.startsWith("450")){
+            codeMsg = "450 Requested mail action not taken: mailbox unavailable.";
+        }
+        else if(replyFromServer.startsWith("451")){
+            codeMsg = "451 Requested action aborted: local error in processing.";
+        }
+        else if(replyFromServer.startsWith("452")){
+            codeMsg = "452 Requested action not taken: insufficient system storage.";
+        }
+        else if(replyFromServer.startsWith("500")){
+            codeMsg = "500 Syntax error, command unrecognized.  [This may include errors such as command line too long]";
+        }
+        else if(replyFromServer.startsWith("501")){
+            codeMsg = "501 Syntax error in parameters or arguments.";
+        }
+        else if(replyFromServer.startsWith("502")){
+            codeMsg = "502 Command not implemented.";
+        }
+        else if(replyFromServer.startsWith("503")){
+            codeMsg = "503 Bad sequence of commands.";
+        }
+        else if(replyFromServer.startsWith("504")){
+            codeMsg = "504 Command parameter not implemented.";
+        }
+        else if(replyFromServer.startsWith("550")){
+            codeMsg = "550 Requested action not taken: mailbox unavailable.";
+        }
+        else if(replyFromServer.startsWith("551")){
+            codeMsg = "551 User not local; please try <forward-path>.";
+        }
+        else if(replyFromServer.startsWith("552")){
+            codeMsg = "552 Requested mail action aborted: exceeded storage allocation.";
+        }
+        else if(replyFromServer.startsWith("553")){
+            codeMsg = "553 Requested action not taken: mailbox name not allowed. [E.g., mailbox syntax incorrect]";
+        }
+        else if(replyFromServer.startsWith("554")){
+            codeMsg = "554 Transaction failed.";
+        }
+        else {
+            codeMsg = "UNKNOWN REPLY FROM SERVER";
+        }
+
+        return codeMsg;
     }
 }
 //Attachment needs to be handled tomorrow morning.
