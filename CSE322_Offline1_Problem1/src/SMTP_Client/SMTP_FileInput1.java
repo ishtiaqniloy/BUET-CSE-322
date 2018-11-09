@@ -78,6 +78,7 @@ public class SMTP_FileInput1 {
                         System.out.println("Server Reply : " + replyFromServer);
                         ///APPROPRIATE MSG
 
+
                         if(fileStr.equalsIgnoreCase("QUIT")){
                             state = "CLOSED";
                             smtpSocket.close();
@@ -174,6 +175,7 @@ public class SMTP_FileInput1 {
             }
         }
         throw  new TimeoutException();
+
 
     }
 }
