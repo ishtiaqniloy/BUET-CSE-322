@@ -2,9 +2,13 @@
 #include <cstring>
 #include <cstdlib>
 
+#include <iostream>
+
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <unistd.h>
+
+using namespace std;
 
 int main(int argc, char *argv[]){
 
@@ -13,6 +17,8 @@ int main(int argc, char *argv[]){
 	char buffer[1024];
 	struct sockaddr_in server_address;
 	struct sockaddr_in client_address;
+
+	//gets(buffer);
 
 	if(argc != 2){
 		printf("%s <ip address>\n", argv[0]);
@@ -31,7 +37,9 @@ int main(int argc, char *argv[]){
 	bind_flag = bind(sockfd, (struct sockaddr*) &client_address, sizeof(sockaddr_in));
 
 	while(true){
-		gets(buffer);
+		//gets(buffer);
+		cin >> buffer;
+
 		if(!strcmp(buffer, "shutdown")) break;
 		sendto(sockfd, buffer, 1024, 0, (struct sockaddr*) &server_address, sizeof(sockaddr_in));
 	}
