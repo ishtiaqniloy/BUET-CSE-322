@@ -24,6 +24,7 @@ int main(){
 	bind_flag = bind(sockfd, (struct sockaddr*) &server_address, sizeof(sockaddr_in));
 
 	while(true){
+		//printf("in while\n");
 		bytes_received = recvfrom(sockfd, buffer, 1024, 0, (struct sockaddr*) &client_address, &addrlen);
 		printf("[%s:%d]: %s\n", inet_ntoa(client_address.sin_addr), ntohs(client_address.sin_port), buffer);
 	}
