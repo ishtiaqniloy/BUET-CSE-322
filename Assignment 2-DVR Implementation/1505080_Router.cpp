@@ -11,19 +11,18 @@
 #include <unistd.h>
 
 #define INFINITY 99999999
-#define SENDING_INTERVAL 5
+#define MAX_DOWN 3
 
 using namespace std;
 
 class RoutingTableEntry{
-public:
     unsigned char *destIP;
     unsigned char *nextHop;
     int cost;
     bool up;
 
     int downCount;
-
+public:
     RoutingTableEntry(unsigned char d[4], unsigned char n[4], int c, bool u=true, int dCount=0){
         destIP = new  unsigned char[4];
         nextHop =  new unsigned char[4];
@@ -105,10 +104,13 @@ public:
 
 };
 
+FILE *topo;
 unsigned char *selfIP;
 char *selfIPStr;
 vector<unsigned char*> routers;
 vector<unsigned char*> neighbours;
+vector<int> linkCost;
+vector<bool> linkUp;
 vector<RoutingTableEntry*> routingTable;
 
 void printIP(unsigned char* IP){
@@ -233,13 +235,18 @@ void sendRoutingTable(){
 		client_address.sin_port = htons(4747);
 		client_address.sin_addr.s_addr = inet_addr(selfIPStr);
 
-	for(int i=0; i<neighbours.size(); i++){		
-		char neighbourStr[30];
+	for(int i=0; i<neighbours.size(); i++){
 		unsigned char *n = neighbours.at(i);
 
-		printf("sending to : %s\n", getIPString(n));
+		char *neighbourStr = getIPString(n);
 
-		sprintf(neighbourStr, "%d.%d.%d.%d", n[0], n[1], n[2], n[3]);
+		bool canSend = linkUp[i];
+		if(!canSend){
+			continue;
+		}
+
+		printf("Sending to : %s\n", getIPString(n));
+
 		server_address.sin_addr.s_addr = inet_addr(neighbourStr);
 
 		sockfd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -257,9 +264,14 @@ void sendRoutingTable(){
 
 		for(int j=0; j<routingTable.size(); j++){
 			RoutingTableEntry *entry = routingTable.at(j);
-			entry->printEntry();
+			
+			//entry->printEntry();
 
-			//unsigned char *destIP = entry->getDestIP();
+			unsigned char *destIP = entry->getDestIP();
+
+			if(checkIPEqual(n, destIP)){
+				continue;
+			}
 
 			if(entry->isUp()){
 				buffer[2] = 1;
@@ -277,10 +289,6 @@ void sendRoutingTable(){
 			buffer[12] = 0;
 
 			sprintf(buffer+12, "%d", entry->getCost());
-
-			//char c[5];
-			//itoa(entry->getCost(), c, 10);
-			//strcat(buffer+12, c);
 
 			sendto(sockfd, buffer, 1024, 0, (struct sockaddr*) &server_address, sizeof(sockaddr_in));
 
@@ -326,12 +334,58 @@ bool receiveRoutingEntry(char *buffer){
 
 	 printf("Received Entry form %s : %s %d %d\n", nStr, dStr, cost, entryUp);
 
+	 if(!neighboursContains(n)){
+	 	printf("Wrong incoming transmission\n");
+	 	return false;
+	 }
+	 else if(checkIPEqual(d, selfIP)){
+	 	return false;
+	 }
 
+	 RoutingTableEntry *destEntry = findEntry(d);
+	 RoutingTableEntry *neighbourEntry = findEntry(n);
+	 int newCost = cost+neighbourEntry->getCost();
 
+	 if(destEntry == NULL){	//new destination
+	 	printf("Found path to new IP : %s\n", dStr);
+	 	destEntry = new RoutingTableEntry(d, n, newCost);
 
+	 	routingTable.push_back(destEntry);
 
+	 	printRoutingTable();
+	 }
+	 else if(checkIPEqual(n, destEntry->getNextHop()) && destEntry->getCost()!=newCost){	//update cost
+	 	destEntry->setCost(newCost);
+	 	printf("Updated cost to IP : %s through : %s\n", dStr, nStr);
 
+	 	printRoutingTable();
+	 }
+	 else if(destEntry->getCost() > newCost){	//new path, less cost
+	 	destEntry->setNextHop(n);
+	 	destEntry->setCost(newCost);
 
+	 	printf("Updated path to IP : %s through : %s\n", dStr, nStr);
+
+	 	printRoutingTable();
+
+	 }
+
+	 if(!entryUp){
+	 	destEntry->setDownCount(destEntry->getDownCount()+1);
+
+	 	if(destEntry->getDownCount()==MAX_DOWN){
+	 		printf("Path down to IP : %s through : %s\n", dStr, nStr);
+			destEntry->setCost(INFINITY);
+
+	 		printRoutingTable();
+	 	}
+
+	 }
+	 else{	
+		destEntry->setDownCount(0);
+	 }
+
+	 return true;
 
 
 
@@ -361,6 +415,8 @@ bool buildTopology(){
 
 			if(!neighboursContains(IP2)){
 				neighbours.push_back(IP2);
+				linkUp.push_back(true);
+				linkCost.push_back(cost);
 			}
 
 		}
@@ -370,6 +426,8 @@ bool buildTopology(){
 
 			if(!neighboursContains(IP1)){
 				neighbours.push_back(IP1);
+				linkUp.push_back(true);
+				linkCost.push_back(cost);
 			}
 
 		}
@@ -378,20 +436,6 @@ bool buildTopology(){
     }
 }
 
-bool parseInput(char *buffer){
-	if(buffer[0]=='c' && buffer[1]=='l' &&buffer[2]=='k'){
-		printf("[%s:%d]: %s\n", inet_ntoa(client_address.sin_addr), ntohs(client_address.sin_port), buffer);
-		//printf("Bytes Received : %d\n", bytes_received);
-
-		sendRoutingTable();		
-	}
-	else if(buffer[0]=='R' && buffer[1]=='T'){
-		receiveRoutingEntry(buffer);
-	}
-
-
-
-}
 
 bool receiveInput(){
 	//defining server variables
@@ -417,7 +461,17 @@ bool receiveInput(){
     	printf("Waiting for next input...\n");
 		bytes_received = recvfrom(sockfd, buffer, 1024, 0, (struct sockaddr*) &client_address, &addrlen);
 
-		parseInput(buffer);
+		if(buffer[0]=='c' && buffer[1]=='l' &&buffer[2]=='k'){
+			printf("[%s:%d]: %s\n", inet_ntoa(client_address.sin_addr), ntohs(client_address.sin_port), buffer);
+			//printf("Bytes Received : %d\n", bytes_received);
+
+			sendRoutingTable();		
+		}
+		else if(buffer[0]=='R' && buffer[1]=='T'){
+			receiveRoutingEntry(buffer);
+		}
+
+
 	
     }
 
@@ -431,7 +485,6 @@ int main(int argc, char *argv[]){	//argv[1] = ip, argv[2] = topo.txt
     printf("Using IP: %d.%d.%d.%d\n", selfIP[0], selfIP[1], selfIP[2], selfIP[3]);
  
 
-	FILE *topo;
     topo= fopen(argv[2], "r");
     if(topo==NULL){
             printf("ERROR OPENING FILE\n");
@@ -446,7 +499,7 @@ int main(int argc, char *argv[]){	//argv[1] = ip, argv[2] = topo.txt
     printRoutingTable();
 
 
-    receiveInput();
+    receiveInput();	//in while true
 
 
 	return 0;
