@@ -19,11 +19,9 @@ class RoutingTableEntry{
     unsigned char *destIP;
     unsigned char *nextHop;
     int cost;
-    bool up;
 
-    int downCount;
 public:
-    RoutingTableEntry(unsigned char d[4], unsigned char n[4], int c, bool u=true, int dCount=0){
+    RoutingTableEntry(unsigned char d[4], unsigned char n[4], int c){
         destIP = new  unsigned char[4];
         nextHop =  new unsigned char[4];
 
@@ -36,8 +34,6 @@ public:
         }
 
         cost = c;
-        up = u;
-        downCount = dCount;
     }
 
     ~RoutingTableEntry(){
@@ -73,22 +69,6 @@ public:
         RoutingTableEntry::cost = c;
     }
 
-    bool isUp(){
-        return up;
-    }
-
-    void setUp(bool up) {
-        RoutingTableEntry::up = up;
-    }
-
-    int getDownCount(){
-        return downCount;
-    }
-
-    void setDownCount(int d) {
-        RoutingTableEntry::downCount = d;
-    }
-
     void printEntry(){
         printf("%d.%d.%d.%d\t", destIP[0], destIP[1], destIP[2], destIP[3]);
         printf("%d.%d.%d.%d\t", nextHop[0], nextHop[1], nextHop[2], nextHop[3]);
@@ -113,6 +93,7 @@ vector<unsigned char*> routers;
 vector<unsigned char*> neighbours;
 vector<int> linkCost;
 vector<bool> linkUp;
+vector<int> linkCount;
 
 vector<RoutingTableEntry*> routingTable;
 
@@ -205,11 +186,9 @@ void updateRoutingTable(RoutingTableEntry* newEntry){
 
 	RoutingTableEntry *entry = findEntry(newEntry->getDestIP());
 	if(entry!=NULL){
-		if(entry->getCost() > newEntry->getCost() && newEntry->isUp()){
+		if(entry->getCost() > newEntry->getCost()){
 			entry->setNextHop(newEntry->getNextHop());
 			entry->setCost(newEntry->getCost());
-			entry->setUp(newEntry->isUp());
-			entry->setDownCount(newEntry->getDownCount());
 
 			printf("Updating Routing Table: ");
 			entry->printEntry();
@@ -241,10 +220,7 @@ void printRoutingTable(){
 	printIP(selfIP);
 	printf("***\n");
 	for(int i=0; i<routingTable.size(); i++){
-		RoutingTableEntry *entry = routingTable.at(i);
-		if(!entry->isUp()){
-			continue;
-		}		
+		RoutingTableEntry *entry = routingTable.at(i);	
 		entry->printEntry();
 	}
 
@@ -276,6 +252,7 @@ bool buildTopology(){
 				neighbours.push_back(IP2);
 				linkUp.push_back(true);
 				linkCost.push_back(cost);
+				linkCount.push_back(0);
 			}
 
 		}
@@ -287,6 +264,7 @@ bool buildTopology(){
 				neighbours.push_back(IP1);
 				linkUp.push_back(true);
 				linkCost.push_back(cost);
+				linkCount.push_back(0);
 			}
 
 		}
@@ -329,7 +307,7 @@ void sendRoutingTable(){
 
 		buffer[0] = 'R';
 		buffer[1] = 'T';
-		buffer[2] = ' ';	//isUp()
+		buffer[2] = ' ';	
 
 		buffer[3] = selfIP[0];
 		buffer[4] = selfIP[1];
@@ -343,16 +321,9 @@ void sendRoutingTable(){
 
 			unsigned char *destIP = entry->getDestIP();
 
-			if(checkIPEqual(n, destIP)){
-				continue;
-			}
-
-			if(entry->isUp()){
-				buffer[2] = 1;
-			}
-			else{
-				buffer[2] = 0;
-			}
+			// if(checkIPEqual(n, destIP)){
+			// 	continue;
+			// }
 
 			buffer[7] = destIP[0];
 			buffer[8] = destIP[1];
@@ -382,11 +353,6 @@ bool receiveRoutingEntry(char *buffer){
 	 	return false;
 	 }
 
-	 bool entryUp = false;
-	 if(buffer[2]==1){
-	 	entryUp = true;
-	 }
-
 	 unsigned char *n = new unsigned char[5];
 	 unsigned char *d = new unsigned char[5];
 
@@ -406,15 +372,16 @@ bool receiveRoutingEntry(char *buffer){
 	 char *nStr = getIPString(n);
 	 char *dStr = getIPString(d);
 
-	 printf("Received Entry form %s : %s %d %d\n", nStr, dStr, cost, entryUp);
-
 	 if(!neighboursContains(n)){
 	 	printf("Wrong incoming transmission\n");
 	 	return false;
 	 }
-	 else if(checkIPEqual(d, selfIP)){
-	 	return false;
-	 }
+
+	 int idx = getNeighbourIndex(n);
+	 linkUp[idx] = true;
+	 linkCount[idx] = 0;
+
+	 printf("Received Entry form %s : %s %d\n", nStr, dStr, cost);
 
 	 RoutingTableEntry *destEntry = findEntry(d);
 	 RoutingTableEntry *neighbourEntry = findEntry(n);
@@ -429,6 +396,13 @@ bool receiveRoutingEntry(char *buffer){
 
 		printf("Found path to new IP : %s\n", dStr);
 	 	printRoutingTable();
+	 }
+	 else if(checkIPEqual(d, selfIP)){	//neighbour
+	 	if(destEntry->getCost() >= linkCost[idx]){
+	 		destEntry->setCost(linkCost[idx]);
+	 		destEntry->setNextHop(n);
+	 	}
+
 	 }
 	 else if(checkIPEqual(n, destEntry->getNextHop()) && destEntry->getCost()!=newCost){	//update cost
 	 	destEntry->setCost(newCost);
@@ -445,21 +419,6 @@ bool receiveRoutingEntry(char *buffer){
 
 	 }
 
-	 if(!entryUp){
-	 	destEntry->setDownCount(destEntry->getDownCount()+1);
-
-	 	if(destEntry->getDownCount()==MAX_DOWN){
-			destEntry->setCost(INFINITY);
-
-	 		printf("Path down to IP : %s through : %s\n", dStr, nStr);
-	 		printRoutingTable();
-	 	}
-
-	 }
-	 else{	
-		destEntry->setDownCount(0);
-	 }
-
 	 return true;
 
 
@@ -467,7 +426,62 @@ bool receiveRoutingEntry(char *buffer){
 }
 
 bool UpdateCost(char *buffer){
+	 unsigned char *IP1 = new unsigned char[5];
+	 unsigned char *IP2 = new unsigned char[5];
 
+	 IP1[0] = buffer[4];
+	 IP1[1] = buffer[5];
+	 IP1[2] = buffer[6];
+	 IP1[3] = buffer[7];
+
+	 IP2[0] = buffer[8];
+	 IP2[1] = buffer[9];
+	 IP2[2] = buffer[10];
+	 IP2[3] = buffer[11];
+
+	 int cost = (int)buffer[12];
+
+	 char *IP1Str = getIPString(IP1);
+	 char *IP2Str = getIPString(IP2);
+
+	 printf("Cost change %s %s %d\n", IP1Str, IP2Str, cost);
+
+	 if(checkIPEqual(selfIP, IP1) && !checkIPEqual(selfIP, IP2) && neighboursContains(IP2)){
+	 	int idx = getNeighbourIndex(IP2);
+	 	linkCost[idx] = cost;	
+
+	 	RoutingTableEntry *entry = findEntry(IP2);
+
+	 	if(checkIPEqual(entry->getNextHop(), IP2)){ //directly
+	 		entry->setCost(cost);
+	 	}
+	 	else if(entry->getCost() >= cost){	//through other path previously
+	 		entry->setNextHop(IP2);
+	 		entry->setCost(cost);
+	 	}
+
+
+	 }
+	 else if(checkIPEqual(selfIP, IP2) && !checkIPEqual(selfIP, IP1) && neighboursContains(IP1)){
+		int idx = getNeighbourIndex(IP1);
+	 	linkCost[idx] = cost;	
+
+	 	RoutingTableEntry *entry = findEntry(IP1);
+
+	 	if(checkIPEqual(entry->getNextHop(), IP1)){ //directly
+	 		entry->setCost(cost);
+	 	}
+	 	else if(entry->getCost() >= cost){	//through other path previously
+	 		entry->setNextHop(IP1);
+	 		entry->setCost(cost);
+	 	}
+	 }
+	 else{
+	 	printf("Invalid IP\n");
+	 }
+
+	 
+	 printRoutingTable();
 }
 
 
