@@ -107,18 +107,17 @@ public:
 FILE *topo;
 unsigned char *selfIP;
 char *selfIPStr;
+
 vector<unsigned char*> routers;
+
 vector<unsigned char*> neighbours;
 vector<int> linkCost;
 vector<bool> linkUp;
+
 vector<RoutingTableEntry*> routingTable;
 
 void printIP(unsigned char* IP){
 	printf("%d.%d.%d.%d", IP[0], IP[1], IP[2], IP[3]);
-}
-
-bool checkIPEqual(unsigned char* IP1, unsigned char* IP2){
-	return (IP1[0]==IP2[0] && IP1[1]==IP2[1] && IP1[2]==IP2[2] && IP1[3]==IP2[3]);
 }
 
 char *getIPString(unsigned char* IP){
@@ -128,10 +127,14 @@ char *getIPString(unsigned char* IP){
 	return str;
 }
 
+bool checkIPEqual(unsigned char* IP1, unsigned char* IP2){
+	return (IP1[0]==IP2[0] && IP1[1]==IP2[1] && IP1[2]==IP2[2] && IP1[3]==IP2[3]);
+}
+
 bool routersContains(unsigned char *IP){
 	for(int i=0; i<routers.size(); i++){
 		unsigned char *IP1 = routers.at(i);
-		if(IP1[0]==IP[0] && IP1[1]==IP[1] && IP1[2]==IP[2] && IP1[3]==IP[3]){
+		if(checkIPEqual(IP1, IP)){
 			return true;
 		}	
 	}
@@ -141,15 +144,35 @@ bool routersContains(unsigned char *IP){
 bool neighboursContains(unsigned char *IP){
 	for(int i=0; i<neighbours.size(); i++){
 		unsigned char *IP1 = neighbours.at(i);
-		if(IP1[0]==IP[0] && IP1[1]==IP[1] && IP1[2]==IP[2] && IP1[3]==IP[3]){
+		if(checkIPEqual(IP1, IP)){
 			return true;
 		}	
 	}
 	return false;
 }
 
+int getNeighbourIndex(unsigned char *IP){
+	for(int i=0; i<neighbours.size(); i++){
+		unsigned char *IP1 = neighbours.at(i);
+		if(checkIPEqual(IP1, IP)){
+			return i;
+		}	
+	}
+	return -1;
+}
+
+int getLinkCost(unsigned char *IP){
+	int idx = getNeighbourIndex(IP);
+	return linkCost.at(idx);
+}
+
+bool getLinkUp(unsigned char *IP){
+	int idx = getNeighbourIndex(IP);
+	return linkUp.at(idx);
+}
+
 void printRouters(){
-	printf("Routers of this topology: ");
+	printf("Routers of this topology : ");
 	for(int i=0; i<routers.size(); i++){
 		unsigned char *IP1 = routers.at(i);
 		printIP(IP1);
@@ -168,25 +191,6 @@ void printNeighbours(){
 	printf("\n");
 }
 
-void updateRoutingTable(RoutingTableEntry* newEntry){
-	for(int i=0; i<routingTable.size(); i++){
-		RoutingTableEntry *entry = routingTable.at(i);
-		if(checkIPEqual(entry->getDestIP(), newEntry->getDestIP())){
-			if(entry->getCost() > newEntry->getCost()){
-				routingTable[i] = newEntry;
-				printf("Updating Routing Table: ");
-				newEntry->printEntry();
-			
-			}
-			return;
-		}
-	}
-	routingTable.push_back(newEntry);
-	printf("Updating Routing Table: ");
-	newEntry->printEntry();
-
-}
-
 RoutingTableEntry *findEntry(unsigned char *IP){
 	for(int i=0; i<routingTable.size(); i++){
 		RoutingTableEntry *entry = routingTable.at(i);
@@ -195,6 +199,31 @@ RoutingTableEntry *findEntry(unsigned char *IP){
 		}		
 	}
 	return NULL;
+}
+
+void updateRoutingTable(RoutingTableEntry* newEntry){
+
+	RoutingTableEntry *entry = findEntry(newEntry->getDestIP());
+	if(entry!=NULL){
+		if(entry->getCost() > newEntry->getCost() && newEntry->isUp()){
+			entry->setNextHop(newEntry->getNextHop());
+			entry->setCost(newEntry->getCost());
+			entry->setUp(newEntry->isUp());
+			entry->setDownCount(newEntry->getDownCount());
+
+			printf("Updating Routing Table: ");
+			entry->printEntry();
+
+			delete newEntry;
+			
+		}
+	}
+	else{
+		routingTable.push_back(newEntry);
+		printf("New Routing Table entry: ");
+		newEntry->printEntry();
+	}
+
 }
 
 int findCost(unsigned char *IP){
@@ -219,6 +248,51 @@ void printRoutingTable(){
 		entry->printEntry();
 	}
 
+}
+
+bool buildTopology(){
+	char line[100];
+    int cost;
+
+    while(fgets(line, 80, topo)){
+    	unsigned char* IP1 = new unsigned char[4];
+    	unsigned char* IP2 = new unsigned char[4];
+
+    	printf("TOPOLOGY: %s\n", line);
+ 		sscanf(line, "%hhu.%hhu.%hhu.%hhu %hhu.%hhu.%hhu.%hhu  %d", &IP1[0], &IP1[1], &IP1[2], &IP1[3], &IP2[0], &IP2[1], &IP2[2], &IP2[3], &cost);
+		
+		if(!routersContains(IP1) && !checkIPEqual(selfIP, IP1)){
+			routers.push_back(IP1);
+		}
+		if(!routersContains(IP2) && !checkIPEqual(selfIP, IP2)){
+			routers.push_back(IP2);
+		}
+
+		if(checkIPEqual(selfIP, IP1) && !checkIPEqual(selfIP, IP2)){
+			RoutingTableEntry *newEntry = new RoutingTableEntry(IP2, IP2, cost);
+			updateRoutingTable(newEntry);
+
+			if(!neighboursContains(IP2)){
+				neighbours.push_back(IP2);
+				linkUp.push_back(true);
+				linkCost.push_back(cost);
+			}
+
+		}
+		else if(checkIPEqual(selfIP, IP2) && !checkIPEqual(selfIP, IP1)){
+			RoutingTableEntry *newEntry = new RoutingTableEntry(IP1, IP1, cost);
+			updateRoutingTable(newEntry);
+
+			if(!neighboursContains(IP1)){
+				neighbours.push_back(IP1);
+				linkUp.push_back(true);
+				linkCost.push_back(cost);
+			}
+
+		}
+
+
+    }
 }
 
 void sendRoutingTable(){
@@ -313,8 +387,8 @@ bool receiveRoutingEntry(char *buffer){
 	 	entryUp = true;
 	 }
 
-	 unsigned char *n = new unsigned char[4];
-	 unsigned char *d = new unsigned char[4];
+	 unsigned char *n = new unsigned char[5];
+	 unsigned char *d = new unsigned char[5];
 
 	 n[0] = buffer[3];
 	 n[1] =	buffer[4];
@@ -344,28 +418,29 @@ bool receiveRoutingEntry(char *buffer){
 
 	 RoutingTableEntry *destEntry = findEntry(d);
 	 RoutingTableEntry *neighbourEntry = findEntry(n);
-	 int newCost = cost+neighbourEntry->getCost();
+
+	 int newCost = cost+getLinkCost(n);
 
 	 if(destEntry == NULL){	//new destination
-	 	printf("Found path to new IP : %s\n", dStr);
 	 	destEntry = new RoutingTableEntry(d, n, newCost);
-
 	 	routingTable.push_back(destEntry);
 
+	 	//updateRoutingTable(destEntry);
+
+		printf("Found path to new IP : %s\n", dStr);
 	 	printRoutingTable();
 	 }
 	 else if(checkIPEqual(n, destEntry->getNextHop()) && destEntry->getCost()!=newCost){	//update cost
 	 	destEntry->setCost(newCost);
-	 	printf("Updated cost to IP : %s through : %s\n", dStr, nStr);
 
+	 	printf("Updated cost to IP : %s through : %s\n", dStr, nStr);
 	 	printRoutingTable();
 	 }
-	 else if(destEntry->getCost() > newCost){	//new path, less cost
+	 else if(destEntry->getCost() > newCost && entryUp){	//new path, less cost
 	 	destEntry->setNextHop(n);
 	 	destEntry->setCost(newCost);
 
 	 	printf("Updated path to IP : %s through : %s\n", dStr, nStr);
-
 	 	printRoutingTable();
 
 	 }
@@ -374,9 +449,9 @@ bool receiveRoutingEntry(char *buffer){
 	 	destEntry->setDownCount(destEntry->getDownCount()+1);
 
 	 	if(destEntry->getDownCount()==MAX_DOWN){
-	 		printf("Path down to IP : %s through : %s\n", dStr, nStr);
 			destEntry->setCost(INFINITY);
 
+	 		printf("Path down to IP : %s through : %s\n", dStr, nStr);
 	 		printRoutingTable();
 	 	}
 
@@ -391,49 +466,8 @@ bool receiveRoutingEntry(char *buffer){
 
 }
 
-bool buildTopology(){
-	char line[100];
-    int cost;
+bool UpdateCost(char *buffer){
 
-    while(fgets(line, 80, topo)){
-    	unsigned char* IP1 = new unsigned char[4];
-    	unsigned char* IP2 = new unsigned char[4];
-
-    	printf("TOPOLOGY: %s\n", line);
- 		sscanf(line, "%hhu.%hhu.%hhu.%hhu %hhu.%hhu.%hhu.%hhu  %d", &IP1[0], &IP1[1], &IP1[2], &IP1[3], &IP2[0], &IP2[1], &IP2[2], &IP2[3], &cost);
-		
-		if(!routersContains(IP1) && !checkIPEqual(selfIP, IP1)){
-			routers.push_back(IP1);
-		}
-		if(!routersContains(IP2) && !checkIPEqual(selfIP, IP2)){
-			routers.push_back(IP2);
-		}
-
-		if(checkIPEqual(selfIP, IP1) && !checkIPEqual(selfIP, IP2)){
-			RoutingTableEntry *newEntry = new RoutingTableEntry(IP2, IP2, cost);
-			updateRoutingTable(newEntry);
-
-			if(!neighboursContains(IP2)){
-				neighbours.push_back(IP2);
-				linkUp.push_back(true);
-				linkCost.push_back(cost);
-			}
-
-		}
-		else if(checkIPEqual(selfIP, IP2) && !checkIPEqual(selfIP, IP1)){
-			RoutingTableEntry *newEntry = new RoutingTableEntry(IP1, IP1, cost);
-			updateRoutingTable(newEntry);
-
-			if(!neighboursContains(IP1)){
-				neighbours.push_back(IP1);
-				linkUp.push_back(true);
-				linkCost.push_back(cost);
-			}
-
-		}
-
-
-    }
 }
 
 
@@ -455,8 +489,6 @@ bool receiveInput(){
 	sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 	bind_flag = bind(sockfd, (struct sockaddr*) &server_address, sizeof(sockaddr_in));
 
-	char cmd[20];
-
     while(true){
     	printf("Waiting for next input...\n");
 		bytes_received = recvfrom(sockfd, buffer, 1024, 0, (struct sockaddr*) &client_address, &addrlen);
@@ -469,6 +501,13 @@ bool receiveInput(){
 		}
 		else if(buffer[0]=='R' && buffer[1]=='T'){
 			receiveRoutingEntry(buffer);
+		}
+		else if(buffer[0]=='c' && buffer[1]=='o' && buffer[2]=='s' && buffer[3]=='t'){
+			UpdateCost(buffer);
+
+		}
+		else{
+			printf("Unknown Command: %s\n", buffer);
 		}
 
 
