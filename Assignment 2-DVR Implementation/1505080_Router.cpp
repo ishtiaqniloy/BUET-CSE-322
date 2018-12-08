@@ -22,7 +22,9 @@ public:
     int cost;
     bool up;
 
-    RoutingTableEntry(unsigned char d[4], unsigned char n[4], int c, bool u=true){
+    int downCount;
+
+    RoutingTableEntry(unsigned char d[4], unsigned char n[4], int c, bool u=true, int dCount=0){
         destIP = new  unsigned char[4];
         nextHop =  new unsigned char[4];
 
@@ -36,6 +38,7 @@ public:
 
         cost = c;
         up = u;
+        downCount = dCount;
     }
 
     ~RoutingTableEntry(){
@@ -79,6 +82,14 @@ public:
         RoutingTableEntry::up = up;
     }
 
+    int getDownCount(){
+        return downCount;
+    }
+
+    void setDownCount(int d) {
+        RoutingTableEntry::downCount = d;
+    }
+
     void printEntry(){
         printf("%d.%d.%d.%d\t", destIP[0], destIP[1], destIP[2], destIP[3]);
         printf("%d.%d.%d.%d\t", nextHop[0], nextHop[1], nextHop[2], nextHop[3]);
@@ -106,6 +117,13 @@ void printIP(unsigned char* IP){
 
 bool checkIPEqual(unsigned char* IP1, unsigned char* IP2){
 	return (IP1[0]==IP2[0] && IP1[1]==IP2[1] && IP1[2]==IP2[2] && IP1[3]==IP2[3]);
+}
+
+char *getIPString(unsigned char* IP){
+	char *str = new char[30];
+	sprintf(str, "%d.%d.%d.%d", IP[0], IP[1], IP[2], IP[3]);
+
+	return str;
 }
 
 bool routersContains(unsigned char *IP){
@@ -167,14 +185,24 @@ void updateRoutingTable(RoutingTableEntry* newEntry){
 
 }
 
-int findCost(unsigned char *IP){
+RoutingTableEntry *findEntry(unsigned char *IP){
 	for(int i=0; i<routingTable.size(); i++){
 		RoutingTableEntry *entry = routingTable.at(i);
-		if(checkIPEqual(IP, entry->getDestIP)){
-			return entry->getCost();
+		if(checkIPEqual(IP, entry->getDestIP())){
+			return entry;
 		}		
 	}
-	return INFINITY;
+	return NULL;
+}
+
+int findCost(unsigned char *IP){
+	RoutingTableEntry *entry = findEntry(IP);
+	if(entry==NULL){
+		return INFINITY;
+	}
+	else{
+		return entry->getCost();
+	}
 }
 
 void printRoutingTable(){
@@ -198,23 +226,21 @@ void sendRoutingTable(){
 	struct sockaddr_in server_address;
 	struct sockaddr_in client_address;
 
-	for(int i=0; i<neighbours.size(); i++){
 		server_address.sin_family = AF_INET;
 		server_address.sin_port = htons(4747);
-		
-		char neighbourStr[30];
-		unsigned char *n = neighbours.at(i);
-
-		printf("sending to : ");
-		printIP(n);
-		printf("\n");
-
-		sprintf(neighbourStr, "%d.%d.%d.%d", n[0], n[1], n[2], n[3]);
-		server_address.sin_addr.s_addr = inet_addr(neighbourStr);
 
 		client_address.sin_family = AF_INET;
 		client_address.sin_port = htons(4747);
 		client_address.sin_addr.s_addr = inet_addr(selfIPStr);
+
+	for(int i=0; i<neighbours.size(); i++){		
+		char neighbourStr[30];
+		unsigned char *n = neighbours.at(i);
+
+		printf("sending to : %s\n", getIPString(n));
+
+		sprintf(neighbourStr, "%d.%d.%d.%d", n[0], n[1], n[2], n[3]);
+		server_address.sin_addr.s_addr = inet_addr(neighbourStr);
 
 		sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 		bind_flag = bind(sockfd, (struct sockaddr*) &client_address, sizeof(sockaddr_in));
@@ -222,7 +248,7 @@ void sendRoutingTable(){
 
 		buffer[0] = 'R';
 		buffer[1] = 'T';
-		buffer[2] = ' ';
+		buffer[2] = ' ';	//isUp()
 
 		buffer[3] = selfIP[0];
 		buffer[4] = selfIP[1];
@@ -230,9 +256,17 @@ void sendRoutingTable(){
 		buffer[6] = selfIP[3];
 
 		for(int j=0; j<routingTable.size(); j++){
-			RoutingTableEntry *entry = routingTable.at(i);
+			RoutingTableEntry *entry = routingTable.at(j);
+			entry->printEntry();
 
-			unsigned char *destIP = entry->getDestIP();
+			//unsigned char *destIP = entry->getDestIP();
+
+			if(entry->isUp()){
+				buffer[2] = 1;
+			}
+			else{
+				buffer[2] = 0;
+			}
 
 			buffer[7] = destIP[0];
 			buffer[8] = destIP[1];
@@ -260,23 +294,51 @@ void sendRoutingTable(){
 }
 
 
-int main(int argc, char *argv[]){	//argv[1] = ip, argv[2] = topo.txt
 
-	selfIPStr = argv[1];
-	selfIP = new unsigned char[4];
-    sscanf(argv[1], "%hhu.%hhu.%hhu.%hhu", &selfIP[0], &selfIP[1], &selfIP[2], &selfIP[3]);
-    printf("Using IP: %d.%d.%d.%d\n", selfIP[0], selfIP[1], selfIP[2], selfIP[3]);
- 
+bool receiveRoutingEntry(char *buffer){
+	 if(buffer[0]!='R' || buffer[1]!='T'){
+	 	return false;
+	 }
 
-	FILE *topo;
-    topo= fopen(argv[2], "r");
-    if(topo==NULL){
-            printf("ERROR OPENING FILE\n");
-        exit(0);
-    }
+	 bool entryUp = false;
+	 if(buffer[2]==1){
+	 	entryUp = true;
+	 }
 
-       
-    char line[100];
+	 unsigned char *n = new unsigned char[4];
+	 unsigned char *d = new unsigned char[4];
+
+	 n[0] = buffer[3];
+	 n[1] =	buffer[4];
+	 n[2] = buffer[5];
+	 n[3] = buffer[6];
+
+	 d[0] = buffer[7];
+	 d[1] =	buffer[8];
+	 d[2] = buffer[9];
+	 d[3] = buffer[10];
+
+	 int cost;
+	 sscanf(buffer+12, "%d", &cost);
+
+	 char *nStr = getIPString(n);
+	 char *dStr = getIPString(d);
+
+	 printf("Received Entry form %s : %s %d %d\n", nStr, dStr, cost, entryUp);
+
+
+
+
+
+
+
+
+
+
+}
+
+bool buildTopology(){
+	char line[100];
     int cost;
 
     while(fgets(line, 80, topo)){
@@ -314,13 +376,25 @@ int main(int argc, char *argv[]){	//argv[1] = ip, argv[2] = topo.txt
 
 
     }
+}
 
-    printRouters();
-    printNeighbours();
-    printRoutingTable();
+bool parseInput(char *buffer){
+	if(buffer[0]=='c' && buffer[1]=='l' &&buffer[2]=='k'){
+		printf("[%s:%d]: %s\n", inet_ntoa(client_address.sin_addr), ntohs(client_address.sin_port), buffer);
+		//printf("Bytes Received : %d\n", bytes_received);
+
+		sendRoutingTable();		
+	}
+	else if(buffer[0]=='R' && buffer[1]=='T'){
+		receiveRoutingEntry(buffer);
+	}
 
 
-    //defining server variables
+
+}
+
+bool receiveInput(){
+	//defining server variables
 
     int sockfd; 
 	int bind_flag;
@@ -342,19 +416,37 @@ int main(int argc, char *argv[]){	//argv[1] = ip, argv[2] = topo.txt
     while(true){
     	printf("Waiting for next input...\n");
 		bytes_received = recvfrom(sockfd, buffer, 1024, 0, (struct sockaddr*) &client_address, &addrlen);
-		printf("[%s:%d]: %s\n", inet_ntoa(client_address.sin_addr), ntohs(client_address.sin_port), buffer);
 
-		//sendRoutingTable();
-
-		if(buffer[0]=='c' && buffer[1]=='l' &&buffer[2]=='k'){
-			sendRoutingTable();
-		}
-		else if(buffer[0]=='R' && buffer[1]=='T'){
-			
-		}
-		
-
+		parseInput(buffer);
+	
     }
+
+}
+
+int main(int argc, char *argv[]){	//argv[1] = ip, argv[2] = topo.txt
+
+	selfIPStr = argv[1];
+	selfIP = new unsigned char[4];
+    sscanf(argv[1], "%hhu.%hhu.%hhu.%hhu", &selfIP[0], &selfIP[1], &selfIP[2], &selfIP[3]);
+    printf("Using IP: %d.%d.%d.%d\n", selfIP[0], selfIP[1], selfIP[2], selfIP[3]);
+ 
+
+	FILE *topo;
+    topo= fopen(argv[2], "r");
+    if(topo==NULL){
+            printf("ERROR OPENING FILE\n");
+        exit(0);
+    }
+
+       
+    buildTopology();
+
+    printRouters();
+    printNeighbours();
+    printRoutingTable();
+
+
+    receiveInput();
 
 
 	return 0;
