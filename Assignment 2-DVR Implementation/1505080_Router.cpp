@@ -10,7 +10,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#define INFINITY 99999999
+#define INFINITY 999
 #define MAX_DOWN 3
 
 using namespace std;
@@ -196,10 +196,13 @@ void checkDown(){
 			linkUp[i] = false;
 
 			unsigned char *ip = neighbours[i];
-			RoutingTableEntry *entry = findEntry(ip);
 
-			if(checkIPEqual(ip, entry->getNextHop())){
-				entry->setCost(INFINITY);
+			for(int j=0; j<routingTable.size(); j++){
+				RoutingTableEntry *entry = routingTable.at(j);
+				if(checkIPEqual(entry->getNextHop(), ip)){
+					entry->setCost(INFINITY);
+				}
+
 			}
 
 		}
