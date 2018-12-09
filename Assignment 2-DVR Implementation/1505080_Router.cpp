@@ -320,8 +320,8 @@ void sendRoutingTable(){
 		char *neighbourStr = getIPString(n);
 
 		bool canSend = linkUp[i];
-		if(!canSend){
-			continue;
+		if(!canSend){	
+			continue;	//avoid sending to neighbours with link down
 		}
 
 		//printf("Sending to : %s\n", getIPString(n));
@@ -527,21 +527,31 @@ bool sendMessage(char *buffer){
 	 char *srcStr = getIPString(src);
 	 char *destStr = getIPString(dest);
 
-	 char *msg = new char[200];
+	 int charCount = buffer[12];
 
-	 sscanf(buffer+14, "%s", msg);
+	 //printf("SIZE = %d\n", charCount);
+
+	 char *msg = new char[charCount+20];
+
+	 // sscanf(buffer+14, "%s", msg);
+
+	 for(int i=0; i<charCount; i++){
+	 	msg[i] = buffer[14+i];
+	 }
+	 msg[charCount]=0;
 
 	 //printf("SEND src = %s, dest = %s, msg = %s\n", srcStr, destStr, msg);
 
 
 	 buffer[0]='f';
-	 buffer[1]='w';
-	 buffer[2]='d';
-	 buffer[3] = ' ';
+	 buffer[1]='r';
+	 buffer[2]='w';
+	 buffer[3] = 'd';
 
 	RoutingTableEntry *entry = findEntry(dest);
 	if(entry==NULL || entry->getCost() >=INFINITY){
 		printf("MSG CANNOT BE SENT\n");
+		delete []msg;
 		return false;
 	}
 
@@ -571,7 +581,9 @@ bool sendMessage(char *buffer){
 
 	close(sockfd);
 
-	printf("%s packet forwarded to %s (printed by %s)\n", msg, nextHopStr, selfIPStr);
+	printf("\"%s\" packet forwarded to %s (printed by %s)\n", msg, nextHopStr, selfIPStr);
+
+	delete []msg;
 
 	return true;
 
@@ -595,22 +607,31 @@ bool forwardedMessage(char *buffer){
 	 char *srcStr = getIPString(src);
 	 char *destStr = getIPString(dest);
 
-	 char *msg = new char[200];
+	 int charCount = buffer[12];
 
-	 sscanf(buffer+14, "%s", msg);
+	 //printf("SIZE = %d\n", charCount);
+
+	 char *msg = new char[charCount+20];
+
+	 // sscanf(buffer+14, "%s", msg);
+
+	 for(int i=0; i<charCount; i++){
+	 	msg[i] = buffer[14+i];
+	 }
+	 msg[charCount]=0;
 
 	 //printf("SEND src = %s, dest = %s, msg = %s\n", srcStr, destStr, msg);
 
 	 if(checkIPEqual(dest, selfIP)){
-		printf("%s packet reached destination from src = %s (printed by %s)\n", msg, srcStr, selfIPStr);
+		printf("\"%s\" packet reached destination from src = %s (printed by %s)\n", msg, srcStr, selfIPStr);
 		return true;
 	 }
 
 
-	 buffer[0]='f';
-	 buffer[1]='w';
-	 buffer[2]='d';
-	 buffer[3] = ' ';
+	 // buffer[0]='f';
+	 // buffer[1]='r';
+	 // buffer[2]='e';
+	 // buffer[3] = 'd';
 
 	RoutingTableEntry *entry = findEntry(dest);
 	if(entry==NULL || entry->getCost() >=INFINITY){
@@ -641,7 +662,7 @@ bool forwardedMessage(char *buffer){
 
 	close(sockfd);
 
-	printf("%s packet forwarded to %s (printed by %s)\n", msg, nextHopStr, selfIPStr);
+	printf("\"%s\" packet forwarded to %s (printed by %s)\n", msg, nextHopStr, selfIPStr);
 
 	return true;
 
@@ -675,7 +696,11 @@ bool receiveInput(){
 			//printf("[%s:%d]: %s\n", inet_ntoa(client_address.sin_addr), ntohs(client_address.sin_port), buffer);
 			//printf("Bytes Received : %d\n", bytes_received);
 
-			printf("CLK\n");
+			int c;
+
+			sscanf(buffer+4, "%d", &c);
+
+			printf("CLK %d\n", c);
 
 			increaseLinkCount();
 			sendRoutingTable();
@@ -693,7 +718,7 @@ bool receiveInput(){
 			sendMessage(buffer);
 
 		}
-		else if(buffer[0]=='f' && buffer[1]=='w' && buffer[2]=='d'){
+		else if(buffer[0]=='f' && buffer[1]=='r' && buffer[2]=='w' && buffer[3]=='d'){
 			forwardedMessage(buffer);
 
 		}
