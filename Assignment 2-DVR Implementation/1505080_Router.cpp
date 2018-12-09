@@ -193,6 +193,8 @@ RoutingTableEntry *findEntry(unsigned char *IP){
 void checkDown(){
 	for(int i=0; i<linkCount.size(); i++){
 		if(linkCount[i]>=MAX_DOWN){
+			printf("LINK DOWN OCCURRED\n");
+
 			linkUp[i] = false;
 
 			unsigned char *ip = neighbours[i];
