@@ -1,9 +1,17 @@
-################################################################802.11 in Grid topology with cross folw
+#parameters format:
+#ns <filename.tcl> #row #col #flows #packets_per_sec #speed_nodes
+
+set num_row [lindex $argv 0] ;#number of row
+set num_col [lindex $argv 1] ;#number of column
+set num_flows [lindex $argv 2]
+set packets_per_sec [lindex $argv 3]
+set speed_nodes [lindex $argv 4]
+
+################################################################802.11 in Grid topology with cross flow
 set cbr_size 1000
 set cbr_rate 11.0Mb
-set cbr_interval 1;# ?????? 1 for 1 packets per second and 0.1 for 10 packets per second
-set num_row [lindex $argv 0] ;#number of row
-set num_col [lindex $argv 0] ;#number of column
+set cbr_interval [expr (1/$packets_per_sec)];# ?????? 1 for 1 packets per second and 0.1 for 10 packets per second
+
 set x_dim 1000
 set y_dim 1000
 set time_duration 50 ;#50
@@ -21,7 +29,7 @@ set val(sleeppower_11) 300e-3			;#Stargate (802.11b)
 set val(transitionpower_11) 200e-3		;#Stargate (802.11b)	??????????????????????????????/
 set val(transitiontime_11) 3			;#Stargate (802.11b)
 
-#CHNG
+#Flow
 set num_parallel_flow [lindex $argv 0]
 set num_cross_flow [lindex $argv 0]
 set num_random_flow 0
