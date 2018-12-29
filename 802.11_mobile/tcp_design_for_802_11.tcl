@@ -10,7 +10,7 @@ set speed_nodes [lindex $argv 4]
 ################################################################802.11 in Grid topology with cross flow
 set cbr_size 1000
 set cbr_rate 11.0Mb
-set cbr_interval [expr (1/$packets_per_sec)];# ?????? 1 for 1 packets per second and 0.1 for 10 packets per second
+set cbr_interval [expr (1.0/$packets_per_sec)];# ?????? 1 for 1 packets per second and 0.1 for 10 packets per second
 
 set x_dim 1000
 set y_dim 1000
@@ -30,9 +30,9 @@ set val(transitionpower_11) 200e-3		;#Stargate (802.11b)	???????????????????????
 set val(transitiontime_11) 3			;#Stargate (802.11b)
 
 #Flow
-set num_parallel_flow [lindex $argv 0]
-set num_cross_flow [lindex $argv 0]
-set num_random_flow 0
+set num_parallel_flow [expr $num_flows * 0 ]
+set num_cross_flow [expr $num_flows * 0 ]
+set num_random_flow [expr $num_flows * 1 ]
 
 set grid 0
 set extra_time 10 ;#10
