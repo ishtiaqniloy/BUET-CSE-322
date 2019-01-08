@@ -1,0 +1,18 @@
+1. Added in void TcpAgent::opencwnd()
+A new mechanism for opening congestion window
+
+case 7:
+            /* The window is increased roughly awnd_*wnd_const_*RTT
+                modification done by sawmya
+                experimental setup, let's see where it goes
+            */
+            f = awnd_;
+            f *= wnd_const_;
+            f *= (t_srtt_ >> T_SRTT_BITS) * tcp_tick_;
+            f += fcnt_;
+            if (f > cwnd_) {
+                
+                    fcnt_ = 0;
+                    ++cwnd_;
+            } else  fcnt_ = f;
+            break;

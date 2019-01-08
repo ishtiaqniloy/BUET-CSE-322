@@ -1,0 +1,41 @@
+1. Added in void TcpAgent::opencwnd()		>done
+A new mechanism for opening congestion window
+
+case 7:
+            /* The window is increased roughly awnd_*wnd_const_*RTT
+                modification done by sawmya
+                experimental setup, let's see where it goes
+            */
+            f = awnd_;
+            f *= wnd_const_;
+            f *= (t_srtt_ >> T_SRTT_BITS) * tcp_tick_;
+            f += fcnt_;
+            if (f > cwnd_) {
+                
+                    fcnt_ = 0;
+                    ++cwnd_;
+            } else  fcnt_ = f;
+            break;
+
+2.	double TcpAgent::rtt_timeout()	>done
+	{
+		double timeout;
+		if (rfc2988_) {
+		// Correction from Tom Kelly to be RFC2988-compliant, by
+		// clamping minrto_ before applying t_backoff_.
+			if (t_rtxcur_ < minrto_ && !use_rtt_) 
+		//there is a possible change rto is not always using rtt asumption for calculating rtt
+
+3.	Implement and modify AODV in Routing ?
+4.	Change the Gt_ and Gr_ value in omni-antenna.cc >
+5.	Droptail ?
+6.	Change the rtt_ calculation (current calc: 7/8 srtt_ + 1/8 sample)/ >done
+	Agent/TCP set T_SRTT_BITS 3
+	Agent/TCP set T_RTTVAR_BITS 2
+	in ns-default.tcl in tcl/lib/
+
+Bonus:
+a.	Calculate the graph for avg_congestion_wnd with respect to time and node/flow/pkt_rate/speed
+b.	Calculate the graph for per-node-throughput with respect to nodeno. and flow/pkt_rate/speed	 
+c.	wiMax simulation in ns2 (Link: http://www.lrc.ic.unicamp.br/wimax_ns2/) >done
+d. 	Cross Transmission of packets
