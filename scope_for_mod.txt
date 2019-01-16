@@ -1,4 +1,4 @@
-1. Added in void TcpAgent::opencwnd()		>done
+1. Added in void TcpAgent::opencwnd()
 A new mechanism for opening congestion window
 
 case 7:
@@ -17,25 +17,46 @@ case 7:
             } else  fcnt_ = f;
             break;
 
-2.	double TcpAgent::rtt_timeout()	>done
+2.	double TcpAgent::rtt_timeout() >> done
 	{
 		double timeout;
 		if (rfc2988_) {
 		// Correction from Tom Kelly to be RFC2988-compliant, by
 		// clamping minrto_ before applying t_backoff_.
-			if (t_rtxcur_ < minrto_ && !use_rtt_) 
+			if (t_rtxcur_ < minrto_ && !use_rtt_) //omitted !use_rtt
 		//there is a possible change rto is not always using rtt asumption for calculating rtt
 
-3.	Implement and modify AODV in Routing ?
-4.	Change the Gt_ and Gr_ value in omni-antenna.cc >
-5.	Droptail ?
-6.	Change the rtt_ calculation (current calc: 7/8 srtt_ + 1/8 sample)/ >done
-	Agent/TCP set T_SRTT_BITS 3
-	Agent/TCP set T_RTTVAR_BITS 2
+3.	Implemented AODV and modified the following parameters in aodv.h >> done
+		class AODV;
+
+		#define MY_ROUTE_TIMEOUT        10                      	// 100 seconds
+		#define ACTIVE_ROUTE_TIMEOUT    8				// 50 seconds
+		#define REV_ROUTE_LIFE          6				// 5  seconds
+		#define BCAST_ID_SAVE           6				// 3 seconds
+
+
+		// No. of times to do network-wide search before timing out for 
+		// MAX_RREQ_TIMEOUT sec. 
+		#define RREQ_RETRIES            5  
+		// timeout after doing network-wide search RREQ_RETRIES times
+		#define MAX_RREQ_TIMEOUT	6.0 //sec
+
+		/* Various constants used for the expanding ring search */
+		#define TTL_START     3
+		#define TTL_THRESHOLD 9
+		#define TTL_INCREMENT 3 
+4.	Change the Gt_ and Gr_ value in omni-antenna.cc  (Changed it to 2.0 and 2.0)
+5.	SFQ
+	maxqueue_ = 40;
+  	buckets_ = 16; //made it 25
+6.	Change the rtt_ calculation (current calc: 7/8 srtt_ + 1/8 sample)/ >> done
+	Agent/TCP set T_SRTT_BITS 3 <modified 4>
+	Agent/TCP set T_RTTVAR_BITS 2	<modified 3> 
 	in ns-default.tcl in tcl/lib/
 
+
 Bonus:
-a.	Calculate the graph for avg_congestion_wnd with respect to time and node/flow/pkt_rate/speed
-b.	Calculate the graph for per-node-throughput with respect to nodeno. and flow/pkt_rate/speed	 
-c.	wiMax simulation in ns2 (Link: http://www.lrc.ic.unicamp.br/wimax_ns2/) >done
+a.	Calculate the graph for avg_congestion_wnd with respect to time and node/flow/pkt_rate
+b.	Calculate the graph for per-node-throughput with respect to nodeno. and flow/pkt_rate	 
+c.	wiMax simulation in ns2 (Link: http://www.lrc.ic.unicamp.br/wimax_ns2/)
 d. 	Cross Transmission of packets
