@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
-    <generated />
+    <generated>
+      <config projectName="RDT_ABP" targetName="RDT_ABP" />
+    </generated>
   </component>
   <component name="CMakeSettings">
     <configurations>
@@ -10,59 +12,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="351c3d4d-ae20-4db0-aa3e-80731a6fe806" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../RDT_GBN/.idea/RDT_GBN.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../RDT_GBN/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../RDT_GBN/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../RDT_GBN/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../RDT_GBN/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../RDT_GBN/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../RDT_GBN/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../RDT_GBN/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/.idea/RDT.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/CMakeLists.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeCache.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/3.13.2/CMakeCCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/3.13.2/CMakeCXXCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/3.13.2/CMakeDetermineCompilerABI_C.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/3.13.2/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/3.13.2/CMakeRCCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/3.13.2/CMakeSystem.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/3.13.2/CompilerIdC/CMakeCCompilerId.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/3.13.2/CompilerIdCXX/CMakeCXXCompilerId.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/Makefile.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/Makefile2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/RDT.dir/CXX.includecache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/RDT.dir/DependInfo.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/RDT.dir/build.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/RDT.dir/cmake_clean.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/RDT.dir/depend.internal" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/RDT.dir/depend.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/RDT.dir/flags.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/RDT.dir/link.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/RDT.dir/linklibs.rsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/RDT.dir/objects1.rsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/RDT.dir/progress.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/TargetDirectories.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/clion-environment.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/cmake.check_cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/feature_tests.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/feature_tests.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/feature_tests.cxx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/CMakeFiles/progress.marks" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/Makefile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/RDT.cbp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/cmake-build-debug/cmake_install.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT/main.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../offline_specification.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/../offline_specification.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RDT_ABP.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/RDT_ABP.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -71,18 +21,26 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
     <leaf>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="85">
+              <caret line="5" selection-start-line="5" selection-end-line="5" />
+            </state>
+          </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/RDT_ABP.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="260">
-              <caret line="519" selection-start-line="519" selection-end-line="519" />
+            <state relative-caret-position="68">
+              <caret line="4" column="20" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="20" />
+              <folding>
+                <element signature="e#0#17#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -99,7 +57,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="697" />
@@ -162,12 +120,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1548355233953</updated>
-      <workItem from="1548355236081" duration="53000" />
+      <workItem from="1548355236081" duration="257000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="53000" />
+    <option name="totallyTimeSpent" value="257000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -176,14 +134,15 @@
       <window_info id="Favorites" side_tool="true" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24962178" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info active="true" anchor="bottom" id="CMake" visible="true" weight="0.3289689" />
+      <window_info anchor="bottom" id="CMake" weight="0.3289689" />
       <window_info anchor="bottom" id="Database Changes" />
       <window_info anchor="bottom" id="Version Control" />
+      <window_info anchor="bottom" id="Messages" weight="0.3289689" />
       <window_info anchor="bottom" id="Terminal" />
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3289689" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -199,12 +158,19 @@
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/RDT_ABP.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="519" selection-start-line="519" selection-end-line="519" />
+        <state relative-caret-position="68">
+          <caret line="4" column="20" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#17#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
