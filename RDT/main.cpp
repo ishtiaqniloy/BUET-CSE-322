@@ -237,10 +237,10 @@ int main()
         free(eventptr);
     }
 
-    terminate:
+terminate:
     printf(
-            " Simulator terminated at time %f\n after sending %d msgs from layer5\n",
-            time, nsim);
+        " Simulator terminated at time %f\n after sending %d msgs from layer5\n",
+        time, nsim);
 }
 
 void init() /* initialize the simulator */
