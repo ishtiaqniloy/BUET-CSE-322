@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+D:/Drive/L-3 T-2/CSE 322 - Computer Networks Sessional/Assignment 4 - RDT/CSE_322_Assignment4_RDT/RDT_GBN/RDT_GBN.cpp
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+

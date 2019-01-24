@@ -1,0 +1,4 @@
+C:\Users\Ishti\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\183.4886.39\bin\cmake\win\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" "D:\Drive\L-3 T-2\CSE 322 - Computer Networks Sessional\Assignment 4 - RDT\CSE_322_Assignment4_RDT\RDT_ABP"
+-- Configuring done
+-- Generating done
+-- Build files have been written to: D:/Drive/L-3 T-2/CSE 322 - Computer Networks Sessional/Assignment 4 - RDT/CSE_322_Assignment4_RDT/RDT_ABP/cmake-build-debug
