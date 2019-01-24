@@ -30,26 +30,144 @@ using namespace std;
 #define BIDIRECTIONAL 0 /* change to 1 if you're doing extra credit */
 /* and write a routine called B_output */
 
+
+/********* Required Classes******************/
+
 /* a "Msg" is the data unit passed from layer 5 (teachers code) to layer  */
 /* 4 (students' code).  It contains the data (characters) to be delivered */
 /* to layer 5 via the students transport level protocol entities.         */
-class Msg
-{
+class Msg{
 public:
-    char data[MSG_SIZE];
+    char *data;
+
+    Msg(){
+        data = new char[MSG_SIZE];
+    }
+
+    Msg(char *str){
+        data = new char[MSG_SIZE];
+        if(str!=NULL){
+            strncpy(data, str, MSG_SIZE);
+        }
+
+        delete []str;
+        str=NULL;
+    }
+
+    Msg(const Msg &msg2){
+        if(data!=NULL){
+            delete []data;
+            data = NULL;
+        }
+        data = new char[MSG_SIZE];
+
+        if(msg2.data!=NULL){
+            strncpy(data, msg2.data, MSG_SIZE);
+        }
+
+    }
+
+    ~Msg(){
+        if(data!=NULL){
+            delete []data;
+            data = NULL;
+        }
+    }
+
 };
 
 /* a packet is the data unit passed from layer 4 (students code) to layer */
 /* 3 (teachers code).  Note the pre-defined packet structure, which all   */
 /* students must follow. */
-class Pkt
-{
+class Pkt{
 public:
     int seqNum;
     int ackNum;
     int checksum;
-    char payLoad[MSG_SIZE];
+    char *payLoad;
+
+    Pkt(){
+        seqNum = -1;
+        ackNum = -1;
+        checksum = -1;
+
+        payLoad = new char[MSG_SIZE];
+    }
+
+    Pkt(int s, int a, int c, char *p){
+        seqNum = s;
+        ackNum = a;
+        checksum = c;
+
+        payLoad = new char[MSG_SIZE];
+        if(p!=NULL){
+            strncpy(payLoad, p, MSG_SIZE);
+        }
+
+        delete []p;
+        p = NULL;
+    }
+
+    Pkt(const Pkt &pkt2){
+        if(payLoad!=NULL){
+            delete []payLoad;
+            payLoad = NULL;
+        }
+        payLoad = new char[MSG_SIZE];
+
+        if(pkt2.payLoad!=NULL){
+            strncpy(payLoad, pkt2.payLoad, MSG_SIZE);
+        }
+        strncpy(payLoad, pkt2.payLoad, MSG_SIZE);
+
+        seqNum = pkt2.seqNum;
+        ackNum = pkt2.ackNum;
+        checksum = pkt2.checksum;
+
+    }
+
+    ~Pkt(){
+        if(payLoad!=NULL){
+            delete []payLoad;
+            payLoad = NULL;
+        }
+    }
+
 };
+
+
+/********* Helping variables and functions ******************/
+int A_lastSentSeq;
+int B_lastReceivedSeq;
+bool A_isLastPacketAcked;
+
+int calclateCheckSum(int s, int a, char *data){
+    int csm = s+a;
+
+    for(int i=0; i < MSG_SIZE; i++){
+        csm = data[i];
+    }
+
+    return csm;
+}
+
+bool verifyChecksum(Pkt *p){
+    return ( calclateCheckSum(p->seqNum, p->ackNum, p->payLoad) == p->checksum );
+}
+
+Pkt* A_makePacket(Msg msg){
+    int s = A_lastSentSeq^1;
+    int a = -1; //not required in unidirectional transmission
+    int c = calclateCheckSum(s, a, msg.data);
+    char *p = msg.data;
+
+    return new Pkt(s, a, c, p);
+
+}
+
+Msg *B_extractMsg(Pkt *pkt){
+    return new Msg(pkt->payLoad);
+}
 
 /********* FUNCTION PROTOTYPES. DEFINED IN THE LATER PART******************/
 void startTimer(int AorB, float increment);
@@ -60,54 +178,59 @@ void toLayer5(int AorB, char *datasent);
 /********* STUDENTS WRITE THE NEXT SEVEN ROUTINES *********/
 
 /* called from layer 5, passed the data to be sent to other side */
-void A_output(Msg message)
-{
-
+void A_output(Msg message){
+    printf("*****In A_output()*****\n");
 }
 
 /* need be completed only for extra credit */
-void B_output(Msg message)
-{
+void B_output(Msg message){
+    printf("*****In B_output()*****\n");
 
 }
 
 /* called from layer 3, when a packet arrives for layer 4 */
-void A_input(Pkt packet)
-{
+void A_input(Pkt packet){
+    printf("*****In A_input()*****\n");
 
 }
 
 /* called when A's timer goes off */
-void A_timerInterrupt()
-{
+void A_timerInterrupt(){
+    printf("*****In A_timerInterrupt()*****\n");
 
 }
 
 /* the following routine will be called once (only) before any other */
 /* entity A routines are called. You can use it to do any initialization */
-void A_init()
-{
+void A_init(){
+    printf("*****In A_init()*****\n");
+
+    A_lastSentSeq = 1;
+    A_isLastPacketAcked = true;
+
 
 }
 
 /* Note that with simplex transfer from a-to-B, there is no B_output() */
 
 /* called from layer 3, when a packet arrives for layer 4 at B*/
-void B_input(Pkt packet)
-{
+void B_input(Pkt packet){
+    printf("*****In B_input()*****\n");
 
 }
 
 /* called when B's timer goes off */
-void B_timerInterrupt()
-{
-    printf("  B_timerInterrupt: B doesn't have a timer. ignore.\n");
+void B_timerInterrupt(){        ///unused for now
+    printf("*****In B_timerInterrupt()*****\n");
+    printf("***In B_timerInterrupt(): B doesn't have a timer. ignore.***\n");
 }
 
-/* the following rouytine will be called once (only) before any other */
+/* the following routine will be called once (only) before any other */
 /* entity B routines are called. You can use it to do any initialization */
-void B_init()
-{
+void B_init(){
+    printf("*****In B_init()*****\n");
+
+    B_lastReceivedSeq = 1;
 
 }
 
@@ -127,8 +250,7 @@ the emulator, you're welcome to look at the code - but again, you should have
 to, and you defeinitely should not have to modify
 ******************************************************************/
 
-struct event
-{
+struct event{
     float evtime;       /* event time */
     int evtype;         /* event type code */
     int eventity;       /* entity where event occurs */
@@ -163,8 +285,7 @@ void init();
 void generate_next_arrival();
 void insertevent(struct event *p);
 
-int main()
-{
+int main(){
     struct event *eventptr;
     Msg msg2give;
     Pkt pkt2give;
@@ -255,8 +376,7 @@ int main()
             time, nsim);
 }
 
-void init() /* initialize the simulator */
-{
+void init() /* initialize the simulator */{
     int i;
     float sum, avg;
     float jimsrand();
@@ -299,8 +419,7 @@ void init() /* initialize the simulator */
 /* isolate all random number generation in one location.  We assume that the*/
 /* system-supplied rand() function return an int in therange [0,mmm]        */
 /****************************************************************************/
-float jimsrand()
-{
+float jimsrand(){
     double mmm = RAND_MAX;
     float x;                 /* individual students may need to change mmm */
     x = rand() / mmm;        /* x should be uniform in [0,1] */
@@ -311,8 +430,7 @@ float jimsrand()
 /*  The next set of routines handle the event list   */
 /*****************************************************/
 
-void generate_next_arrival()
-{
+void generate_next_arrival(){
     double x, log(), ceil();
     struct event *evptr;
     float ttime;
@@ -333,8 +451,7 @@ void generate_next_arrival()
     insertevent(evptr);
 }
 
-void insertevent(struct event *p)
-{
+void insertevent(struct event *p){
     struct event *q, *qold;
 
     if (TRACE > 2)
@@ -376,8 +493,7 @@ void insertevent(struct event *p)
     }
 }
 
-void printevlist()
-{
+void printevlist(){
     struct event *q;
     int i;
     printf("--------------\nEvent List Follows:\n");
@@ -392,8 +508,7 @@ void printevlist()
 /********************** Student-callable ROUTINES ***********************/
 
 /* called by students routine to cancel a previously-started timer */
-void stopTimer(int AorB /* A or B is trying to stop timer */)
-{
+void stopTimer(int AorB /* A or B is trying to stop timer */){
     struct event *q, *qold;
 
     if (TRACE > 2)
@@ -423,8 +538,7 @@ void stopTimer(int AorB /* A or B is trying to stop timer */)
     printf("Warning: unable to cancel your timer. It wasn't running.\n");
 }
 
-void startTimer(int AorB /* A or B is trying to start timer */, float increment)
-{
+void startTimer(int AorB /* A or B is trying to start timer */, float increment){
     struct event *q;
     struct event *evptr;
 
@@ -448,8 +562,7 @@ void startTimer(int AorB /* A or B is trying to start timer */, float increment)
 }
 
 /************************** TOLAYER3 ***************/
-void toLayer3(int AorB, Pkt packet)
-{
+void toLayer3(int AorB, Pkt packet){
     Pkt *mypktptr;
     struct event *evptr, *q;
     float lastime, x;
@@ -518,8 +631,7 @@ void toLayer3(int AorB, Pkt packet)
     insertevent(evptr);
 }
 
-void toLayer5(int AorB, char *datasent)
-{
+void toLayer5(int AorB, char *datasent){
     int i;
     if (TRACE > 2)
     {
