@@ -9,6 +9,10 @@
 #include <queue>
 
 #define MSG_SIZE 20
+#define ABP_TIMEOUT
+
+#define A 0
+#define B 1
 
 using namespace std;
 
@@ -267,8 +271,6 @@ struct event *evlist = NULL; /* the event list */
 
 #define OFF 0
 #define ON 1
-#define A 0
-#define B 1
 
 int TRACE = 1;     /* for my debugging */
 int nsim = 0;      /* number of messages from 5 to 4 so far */

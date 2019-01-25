@@ -9,8 +9,21 @@
 #include <queue>
 
 #define MSG_SIZE 20
+#define TIMEOUT 15
+
+#define A 0
+#define B 1
 
 using namespace std;
+
+
+float time = 0.000;
+
+void bufferCopy(char *s, char *t, int n){
+    for(int i=0; i<n; i++){
+        s[i] = t[i];
+    }
+}
 
 /* ******************************************************************
  ALTERNATING BIT AND GO-BACK-N NETWORK EMULATOR: SLIGHTLY MODIFIED
@@ -30,7 +43,6 @@ using namespace std;
 #define BIDIRECTIONAL 0 /* change to 1 if you're doing extra credit */
 /* and write a routine called B_output */
 
-
 /********* Required Classes******************/
 
 /* a "Msg" is the data unit passed from layer 5 (teachers code) to layer  */
@@ -47,10 +59,10 @@ public:
     Msg(char *str){
         data = new char[MSG_SIZE];
         if(str!=NULL){
-            strncpy(data, str, MSG_SIZE);
+            bufferCopy(data, str, MSG_SIZE);
         }
 
-        delete []str;
+        delete []str; ///?
         str=NULL;
     }
 
@@ -62,7 +74,7 @@ public:
         data = new char[MSG_SIZE];
 
         if(msg2.data!=NULL){
-            strncpy(data, msg2.data, MSG_SIZE);
+            bufferCopy(data, msg2.data, MSG_SIZE);
         }
 
     }
@@ -101,10 +113,10 @@ public:
 
         payLoad = new char[MSG_SIZE];
         if(p!=NULL){
-            strncpy(payLoad, p, MSG_SIZE);
+            bufferCopy(payLoad, p, MSG_SIZE);
         }
 
-        delete []p;
+        delete []p; ///?
         p = NULL;
     }
 
@@ -116,9 +128,8 @@ public:
         payLoad = new char[MSG_SIZE];
 
         if(pkt2.payLoad!=NULL){
-            strncpy(payLoad, pkt2.payLoad, MSG_SIZE);
+            bufferCopy(payLoad, pkt2.payLoad, MSG_SIZE);
         }
-        strncpy(payLoad, pkt2.payLoad, MSG_SIZE);
 
         seqNum = pkt2.seqNum;
         ackNum = pkt2.ackNum;
@@ -138,12 +149,16 @@ public:
 
 /********* Helping variables and functions ******************/
 int A_lastSentSeq;
-int B_lastReceivedSeq;
+int B_lastCorrectSeq;
 bool A_isLastPacketAcked;
+Pkt *A_lastPacket;
 
 int calclateCheckSum(int s, int a, char *data){
     int csm = s+a;
 
+    if(data==NULL){
+        return csm;
+    }
     for(int i=0; i < MSG_SIZE; i++){
         csm = data[i];
     }
@@ -155,82 +170,179 @@ bool verifyChecksum(Pkt *p){
     return ( calclateCheckSum(p->seqNum, p->ackNum, p->payLoad) == p->checksum );
 }
 
-Pkt* A_makePacket(Msg msg){
+Pkt* A_makePacket(Msg *msg){
     int s = A_lastSentSeq^1;
     int a = -1; //not required in unidirectional transmission
-    int c = calclateCheckSum(s, a, msg.data);
-    char *p = msg.data;
+    char *p = msg->data;
+    int c = calclateCheckSum(s, a, p);
 
     return new Pkt(s, a, c, p);
 
+}
+
+Pkt* B_makeAckPacket(int ack){
+    int s = -1;
+    int a = ack; //not required in unidirectional transmission
+    char *p = new char[MSG_SIZE];
+    int c = calclateCheckSum(s, a, p);
+
+    return new Pkt(s, a, c, p);
 }
 
 Msg *B_extractMsg(Pkt *pkt){
     return new Msg(pkt->payLoad);
 }
 
+
 /********* FUNCTION PROTOTYPES. DEFINED IN THE LATER PART******************/
 void startTimer(int AorB, float increment);
 void stopTimer(int AorB);
 void toLayer3(int AorB, Pkt packet);
-void toLayer5(int AorB, char *datasent);
+void toLayer5(int AorB, char *dataSent);
 
 /********* STUDENTS WRITE THE NEXT SEVEN ROUTINES *********/
 
 /* called from layer 5, passed the data to be sent to other side */
 void A_output(Msg message){
-    printf("*****In A_output()*****\n");
-}
+    printf("*****At %f In A_output()*****\n", time);
 
-/* need be completed only for extra credit */
-void B_output(Msg message){
-    printf("*****In B_output()*****\n");
+    if(!A_isLastPacketAcked){
+        printf("***At %f In A_output(): Last packet not acked yet. dropping message : %s***\n", time, message.data);
+        return; ///dropped
+    }
+
+    Pkt *pkt = A_makePacket(&message);
+
+    printf("***At %f In A_output(): Sending pkt%d : %s***\n", time, pkt->seqNum, pkt->payLoad);
+
+    toLayer3(A, *pkt);
+    A_lastSentSeq ^= 1;
+    A_isLastPacketAcked = false;
+
+    if(A_lastPacket!=NULL){
+        delete A_lastPacket;
+    }
+    A_lastPacket = pkt;
+
+    ///stopTimer(A);   ///?
+    startTimer(A, TIMEOUT);
+
 
 }
 
 /* called from layer 3, when a packet arrives for layer 4 */
 void A_input(Pkt packet){
-    printf("*****In A_input()*****\n");
+    printf("*****At %f In A_input()*****\n", time);
+
+    if(!verifyChecksum(&packet)){     //corrupt packet received
+        printf("***At %f In A_input(): Corrupt packet received***\n", time);
+        return;
+    }
+
+    int a = packet.ackNum;
+    if(a == A_lastSentSeq){ //last packet ACK received
+        printf("***At %f In A_input(): ACK received for pkt%d***\n", time, a);
+        A_isLastPacketAcked = true;
+        stopTimer(A);
+    }
+    else{   ///NACK received
+        printf("***At %f In A_input(): NACK received for pkt%d***\n", time, a^1);
+
+        toLayer3(A, *A_lastPacket);
+
+        stopTimer(A);   ///?
+        startTimer(A, TIMEOUT);
+
+    }
+
 
 }
 
 /* called when A's timer goes off */
 void A_timerInterrupt(){
-    printf("*****In A_timerInterrupt()*****\n");
+    printf("*****At %f In A_timerInterrupt()*****\n", time);
+
+    printf("***At %f In A_timerInterrupt(): retransmitting pkt%d***\n", time, A_lastSentSeq);
+
+    toLayer3(A, *A_lastPacket);
+
+    ///stopTimer(A);   ///?
+    startTimer(A, TIMEOUT);
 
 }
 
 /* the following routine will be called once (only) before any other */
 /* entity A routines are called. You can use it to do any initialization */
 void A_init(){
-    printf("*****In A_init()*****\n");
+    printf("*****At %f In A_init()*****\n", time);
 
     A_lastSentSeq = 1;
     A_isLastPacketAcked = true;
+    A_lastPacket = NULL;
 
 
 }
 
 /* Note that with simplex transfer from a-to-B, there is no B_output() */
 
+/* need be completed only for extra credit */
+void B_output(Msg message){     ///unused for now
+    printf("*****At %f In B_output()*****\n", time);
+
+}
+
+
 /* called from layer 3, when a packet arrives for layer 4 at B*/
 void B_input(Pkt packet){
-    printf("*****In B_input()*****\n");
+    printf("*****At %f In B_input()*****\n", time);
+
+    if(!verifyChecksum(&packet)){     //corrupt packet received
+        printf("***At %f In B_input(): Corrupt packet received, sending NACK***\n", time);
+
+        Pkt *pkt = B_makeAckPacket(B_lastCorrectSeq);
+        toLayer3(B, *pkt);
+
+        return;
+    }
+
+    if(packet.seqNum == B_lastCorrectSeq){
+        printf("***At %f In B_input(): Duplicate packet received, sending ACK again***\n", time);
+
+        Pkt *pkt = B_makeAckPacket(B_lastCorrectSeq);
+        toLayer3(B, *pkt);
+
+        return;
+    }
+    else{
+        printf("***At %f In B_input(): Correct packet received, pkt%d : %s***\n", time, packet.seqNum, packet.payLoad);
+
+        Msg *msg = B_extractMsg(&packet);
+        toLayer5(B, msg->data);
+
+        B_lastCorrectSeq ^= 1;
+
+        Pkt *pkt = B_makeAckPacket(B_lastCorrectSeq);
+        toLayer3(B, *pkt);
+
+        return;
+
+    }
+
 
 }
 
 /* called when B's timer goes off */
 void B_timerInterrupt(){        ///unused for now
-    printf("*****In B_timerInterrupt()*****\n");
-    printf("***In B_timerInterrupt(): B doesn't have a timer. ignore.***\n");
+    printf("*****At %f In B_timerInterrupt()*****\n", time);
+    printf("***At %f In B_timerInterrupt(): B doesn't have a timer. ignore.***\n", time);
 }
 
 /* the following routine will be called once (only) before any other */
 /* entity B routines are called. You can use it to do any initialization */
 void B_init(){
-    printf("*****In B_init()*****\n");
+    printf("*****At %f In B_init()*****\n", time);
 
-    B_lastReceivedSeq = 1;
+    B_lastCorrectSeq = 1;
 
 }
 
@@ -250,30 +362,28 @@ the emulator, you're welcome to look at the code - but again, you should have
 to, and you defeinitely should not have to modify
 ******************************************************************/
 
-struct event{
+class event{
+public:
     float evtime;       /* event time */
     int evtype;         /* event type code */
     int eventity;       /* entity where event occurs */
     Pkt *pktptr; /* ptr to packet (if any) assoc w/ this event */
-    struct event *prev;
-    struct event *next;
+    event *prev;
+    event *next;
 };
-struct event *evlist = NULL; /* the event list */
+event *evlist = NULL; /* the event list */
 
 /* possible events: */
-#define TIMER_INTERRUPT 0
+#define TIMER_INTERRUPT 3
 #define FROM_LAYER5 1
 #define FROM_LAYER3 2
 
 #define OFF 0
 #define ON 1
-#define A 0
-#define B 1
 
 int TRACE = 1;     /* for my debugging */
 int nsim = 0;      /* number of messages from 5 to 4 so far */
 int nsimmax = 0;   /* number of msgs to generate, then stop */
-float time = 0.000;
 float lossprob;    /* probability that a packet is dropped  */
 float corruptprob; /* probability that one bit is packet is flipped */
 float lambda;      /* arrival rate of messages from layer 5 */
@@ -283,10 +393,11 @@ int ncorrupt;      /* number corrupted by media*/
 
 void init();
 void generate_next_arrival();
-void insertevent(struct event *p);
+void insertevent(event *p);
 
 int main(){
-    struct event *eventptr;
+
+    event *eventptr;
     Msg msg2give;
     Pkt pkt2give;
 
@@ -366,6 +477,10 @@ int main(){
         else
         {
             printf("INTERNAL PANIC: unknown event type \n");
+
+            //printf("***At %f In main(): CHECKING EVENT:\nevtime=%f, evtype=%d, eventity=%d ***\n", time, eventptr->evtime, eventptr->evtype,  eventptr->eventity);
+
+
         }
         free(eventptr);
     }
@@ -432,7 +547,7 @@ float jimsrand(){
 
 void generate_next_arrival(){
     double x, log(), ceil();
-    struct event *evptr;
+    event *evptr;
     float ttime;
     int tempint;
 
@@ -441,7 +556,7 @@ void generate_next_arrival(){
 
     x = lambda * jimsrand() * 2; /* x is uniform on [0,2*lambda] */
     /* having mean of lambda        */
-    evptr = (struct event *)malloc(sizeof(struct event));
+    evptr = new event();
     evptr->evtime = time + x;
     evptr->evtype = FROM_LAYER5;
     if (BIDIRECTIONAL && (jimsrand() > 0.5))
@@ -451,8 +566,12 @@ void generate_next_arrival(){
     insertevent(evptr);
 }
 
-void insertevent(struct event *p){
-    struct event *q, *qold;
+void insertevent(event *p){
+    printf("*****At %f In insertevent()*****\n", time);
+    //printf("***At %f In insertevent(): CHECKING EVENT:\nevtime=%f, evtype=%d, eventity=%d ***\n", time, p->evtime, p->evtype,  p->eventity);
+
+
+    event *q, *qold;
 
     if (TRACE > 2)
     {
@@ -475,13 +594,33 @@ void insertevent(struct event *p){
             qold->next = p;
             p->prev = qold;
             p->next = NULL;
+
+           // printf("***At %f In insertevent(): CHECKING1***\n", time);
+            printf("***At %f In CHECKING21:\nevtime=%f, evtype=%d, eventity=%d ***\n", time, p->evtime, p->evtype,  p->eventity);
+
         }
         else if (q == evlist)     /* front of list */
-        {
-            p->next = evlist;
+        {   ///???????????????????????????????????????????????????
+
+            printf("***At %f In CHECKING2:\nprev evlist=%d ***\n", time, evlist);
+
+            p->next = q;
             p->prev = NULL;
-            p->next->prev = p;
+            q->prev = p; ///?
             evlist = p;
+
+
+           // printf("***At %f In insertevent(): CHECKING2***\n", time);
+            printf("***At %f In CHECKING2:\nevtime=%f, evtype=%d, eventity=%d ***\n", time, p->evtime, p->evtype,  p->eventity);
+            printf("p->next = %d, evlist = %d, p = %d\n", p->next, evlist, p);
+
+            printf("p->next %d: evtime=%f, evtype=%d, eventity=%d ***\n",p->next, p->next->evtime, p->next->evtype,  p->next->eventity);
+
+            printf("At %f In CHECKING2() End: PRINTING WHOLE Event Queue\n", time);
+
+            for (q = evlist; q != NULL; q = q->next)
+                printf("***evtime=%f, evtype=%d, eventity=%d ***\n", q->evtime, q->evtype,  q->eventity);
+
         }
         else     /* middle of list */
         {
@@ -489,12 +628,24 @@ void insertevent(struct event *p){
             p->prev = q->prev;
             q->prev->next = p;
             q->prev = p;
+
+           // printf("***At %f In insertevent(): CHECKING3***\n", time);
+            printf("***At %f In CHECKING3:\nevtime=%f, evtype=%d, eventity=%d ***\n", time, p->evtime, p->evtype,  p->eventity);
+
         }
     }
+
+    printf("***At %f In insertevent() End: CHECKING EVENT:\nevtime=%f, evtype=%d, eventity=%d ***\n", time, p->evtime, p->evtype,  p->eventity);
+
+    printf("At %f In insertevent() End: PRINTING WHOLE Event Queue\n", time);
+
+    for (q = evlist; q != NULL; q = q->next)
+        printf("***evtime=%f, evtype=%d, eventity=%d ***\n", q->evtime, q->evtype,  q->eventity);
+
 }
 
 void printevlist(){
-    struct event *q;
+    event *q;
     int i;
     printf("--------------\nEvent List Follows:\n");
     for (q = evlist; q != NULL; q = q->next)
@@ -509,7 +660,10 @@ void printevlist(){
 
 /* called by students routine to cancel a previously-started timer */
 void stopTimer(int AorB /* A or B is trying to stop timer */){
-    struct event *q, *qold;
+    printf("*****At %f In stopTimer()*****\n", time);
+    printf("***At %f In stopTimer(): A/B=%d***\n", time, AorB);
+
+    event *q, *qold;
 
     if (TRACE > 2)
         printf("          STOP TIMER: stopping timer at %f\n", time);
@@ -539,8 +693,11 @@ void stopTimer(int AorB /* A or B is trying to stop timer */){
 }
 
 void startTimer(int AorB /* A or B is trying to start timer */, float increment){
-    struct event *q;
-    struct event *evptr;
+    printf("*****At %f In startTimer()*****\n", time);
+    printf("***At %f In startTimer(): A/B=%d***\n", time, AorB);
+
+    event *q;
+    event *evptr;
 
     if (TRACE > 2)
         printf("          START TIMER: starting timer at %f\n", time);
@@ -554,17 +711,23 @@ void startTimer(int AorB /* A or B is trying to start timer */, float increment)
         }
 
     /* create future event for when timer goes off */
-    evptr = (struct event *)malloc(sizeof(struct event));
+    evptr = new event();
     evptr->evtime = time + increment;
     evptr->evtype = TIMER_INTERRUPT;
     evptr->eventity = AorB;
+
+    //printf("***At %f In startTimer(): CHECKING EVENT:\n A/B=%d, evtime=%f, evtype=%d, eventity=%d ***\n", time, AorB, evptr->evtime, evptr->evtype,  evptr->eventity);
+
     insertevent(evptr);
 }
 
 /************************** TOLAYER3 ***************/
 void toLayer3(int AorB, Pkt packet){
+    printf("*****At %f In toLayer3()*****\n", time);
+    printf("***At %f In toLayer3(): A/B=%d, data = %s***\n", time, AorB, packet.payLoad);
+
     Pkt *mypktptr;
-    struct event *evptr, *q;
+    event *evptr, *q;
     float lastime, x;
     int i;
 
@@ -579,14 +742,23 @@ void toLayer3(int AorB, Pkt packet){
         return;
     }
 
+    //printf("***At %f In toLayer3(): A/B=%d, Check1***\n", time, AorB);
+
+
     /* make a copy of the packet student just gave me since he/she may decide */
     /* to do something with the packet after we return back to him/her */
-    mypktptr = (Pkt *)malloc(sizeof(Pkt));
+    mypktptr = new Pkt();
     mypktptr->seqNum = packet.seqNum;
     mypktptr->ackNum = packet.ackNum;
     mypktptr->checksum = packet.checksum;
+
+    //printf("***At %f In toLayer3(): A/B=%d, Check1***\n", time, AorB);
+
     for (i = 0; i < MSG_SIZE; i++)
         mypktptr->payLoad[i] = packet.payLoad[i];
+
+    //printf("***At %f In toLayer3(): A/B=%d, Check2***\n", time, AorB);
+
     if (TRACE > 2)
     {
         printf("          TOLAYER3: seq: %d, ack %d, check: %d ", mypktptr->seqNum,
@@ -597,7 +769,7 @@ void toLayer3(int AorB, Pkt packet){
     }
 
     /* create future event for arrival of packet at the other side */
-    evptr = (struct event *)malloc(sizeof(struct event));
+    evptr = new event();
     evptr->evtype = FROM_LAYER3;      /* packet will pop out from layer3 */
     evptr->eventity = (AorB + 1) % 2; /* event occurs at other entity */
     evptr->pktptr = mypktptr;         /* save ptr to my copy of packet */
@@ -628,16 +800,21 @@ void toLayer3(int AorB, Pkt packet){
 
     if (TRACE > 2)
         printf("          TOLAYER3: scheduling arrival on other side\n");
+
+    //printf("***At %f In toLayer3(): A/B=%d, Exiting***\n", time, AorB);
     insertevent(evptr);
 }
 
-void toLayer5(int AorB, char *datasent){
+void toLayer5(int AorB, char *dataSent){
+    printf("*****At %f In toLayer5()*****\n", time);
+    printf("***At %f In toLayer5(): A/B=%d, data = %s***\n", time, AorB, dataSent);
+
     int i;
     if (TRACE > 2)
     {
         printf("          TOLAYER5: data received: ");
         for (i = 0; i < MSG_SIZE; i++)
-            printf("%c", datasent[i]);
+            printf("%c", dataSent[i]);
         printf("\n");
     }
 }
