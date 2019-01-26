@@ -3,11 +3,6 @@
 #include <cstring>
 #include <cmath>
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <queue>
-
 #define MSG_SIZE 20
 #define TIMEOUT 25
 
@@ -18,11 +13,7 @@ using namespace std;
 
 float time = 0.000;
 
-void bufferCopy(char *s, char *t, int n){
-    for(int i=0; i<n; i++){
-        s[i] = t[i];
-    }
-}
+
 /* ******************************************************************
  ALTERNATING BIT AND GO-BACK-N NETWORK EMULATOR: SLIGHTLY MODIFIED
  FROM VERSION 1.1 of J.F.Kurose
@@ -79,6 +70,12 @@ int B_correctlyReceived;
 int B_corruptReceived;
 int B_duplicateReceived;
 
+
+void bufferCopy(char *s, char *t, int n){
+    for(int i=0; i<n; i++){
+        s[i] = t[i];
+    }
+}
 
 int calculateCheckSum(int s, int a, char data[]){
     int csm = s+a;

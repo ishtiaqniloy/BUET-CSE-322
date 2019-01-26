@@ -12,16 +12,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c1e6abe4-78e3-458d-ac5b-442d02fed712" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../RDT_GBN/.idea/RDT_GBN.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../RDT_GBN/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../RDT_GBN/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../RDT_GBN/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../RDT_GBN/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../RDT_GBN/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../RDT_GBN/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../RDT_GBN/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../1505080/output_abp.docx" beforeDir="false" afterPath="$PROJECT_DIR$/../1505080/output_abp.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../1505080/rdt_abp.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../1505080/rdt_abp.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RDT_ABP2.dir/CXX.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RDT_ABP2.dir/CXX.includecache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../RDT_GBN/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../RDT_GBN/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/RDT_GBN.dir/CXX.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/RDT_GBN.dir/CXX.includecache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../RDT_GBN/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../RDT_GBN/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../offline_specification.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/../offline_specification.pdf" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -42,8 +40,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="16" column="20" lean-forward="true" selection-end-line="735" />
+            <state relative-caret-position="46">
+              <caret line="43" selection-end-line="732" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -93,7 +91,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../RDT_ABP" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
@@ -129,18 +127,20 @@
       <updated>1548484100390</updated>
       <workItem from="1548484127851" duration="6135000" />
       <workItem from="1548493873307" duration="1218000" />
+      <workItem from="1548514240966" duration="32000" />
+      <workItem from="1548515206514" duration="23000" />
+      <workItem from="1548533519179" duration="831000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7353000" />
+    <option name="totallyTimeSpent" value="8239000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.16263238" />
+      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.16944024" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Version Control" order="0" />
       <window_info anchor="bottom" id="Terminal" order="1" />
@@ -149,7 +149,7 @@
       <window_info anchor="bottom" id="Messages" order="4" weight="0.69394433" />
       <window_info anchor="bottom" id="Message" order="5" />
       <window_info anchor="bottom" id="Find" order="6" weight="0.3289689" />
-      <window_info anchor="bottom" id="Run" order="7" weight="0.63175124" />
+      <window_info active="true" anchor="bottom" id="Run" order="7" visible="true" weight="0.63175124" />
       <window_info anchor="bottom" id="Debug" order="8" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="9" weight="0.25" />
       <window_info anchor="bottom" id="CMake" order="10" />
@@ -170,8 +170,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" column="20" lean-forward="true" selection-end-line="735" />
+        <state relative-caret-position="46">
+          <caret line="43" selection-end-line="732" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
           </folding>
