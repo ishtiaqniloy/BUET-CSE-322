@@ -12,54 +12,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c1e6abe4-78e3-458d-ac5b-442d02fed712" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_ABP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../RDT_ABP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_ABP/RDT_ABP.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../RDT_ABP/RDT_ABP.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/.idea/RDT_GBN.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/CMakeLists.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/RDT_GBN.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeCache.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/3.13.2/CMakeCCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/3.13.2/CMakeCXXCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/3.13.2/CMakeDetermineCompilerABI_C.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/3.13.2/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/3.13.2/CMakeRCCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/3.13.2/CMakeSystem.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/3.13.2/CompilerIdC/CMakeCCompilerId.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/3.13.2/CompilerIdCXX/CMakeCXXCompilerId.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/Makefile.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/Makefile2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/RDT_GBN.dir/CXX.includecache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/RDT_GBN.dir/DependInfo.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/RDT_GBN.dir/build.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/RDT_GBN.dir/cmake_clean.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/RDT_GBN.dir/depend.internal" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/RDT_GBN.dir/depend.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/RDT_GBN.dir/flags.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/RDT_GBN.dir/link.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/RDT_GBN.dir/linklibs.rsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/RDT_GBN.dir/objects1.rsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/RDT_GBN.dir/progress.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/TargetDirectories.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/clion-environment.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/cmake.check_cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/feature_tests.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/feature_tests.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/feature_tests.cxx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/CMakeFiles/progress.marks" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/Makefile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/RDT_GBN.cbp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RDT_GBN/cmake-build-debug/cmake_install.cmake" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/../RDT_GBN/.idea/RDT_GBN.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../RDT_GBN/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../RDT_GBN/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../RDT_GBN/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../RDT_GBN/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../RDT_GBN/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../RDT_GBN/CMakeLists.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../RDT_GBN/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../offline_specification.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/../offline_specification.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../rdt_BACKUP.cpp" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -70,7 +33,7 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
           <provider selected="true" editor-type-id="text-editor" />
@@ -79,8 +42,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="94">
-              <caret line="89" column="22" selection-start-line="89" selection-start-column="22" selection-end-line="89" selection-end-column="22" />
+            <state relative-caret-position="272">
+              <caret line="16" column="20" lean-forward="true" selection-end-line="735" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -100,6 +63,7 @@
       </list>
     </option>
   </component>
+  <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-7" />
     <option name="width" value="697" />
@@ -163,60 +127,39 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1548484100390</updated>
-      <workItem from="1548484127851" duration="4956000" />
+      <workItem from="1548484127851" duration="6135000" />
+      <workItem from="1548493873307" duration="1218000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="4956000" />
+    <option name="totallyTimeSpent" value="7353000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Favorites" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="0" weight="0.30455258" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="CMake" />
-      <window_info anchor="bottom" id="Database Changes" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Messages" weight="0.69394433" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.19639935" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="right" id="Database" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-    </layout>
-    <layout-to-restore>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.30455258" />
+      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.16263238" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Version Control" order="0" />
       <window_info anchor="bottom" id="Terminal" order="1" />
       <window_info anchor="bottom" id="Event Log" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="3" />
-      <window_info anchor="bottom" id="Messages" order="4" weight="0.3289689" />
-      <window_info anchor="bottom" id="CMake" order="5" />
-      <window_info anchor="bottom" id="Message" order="6" />
-      <window_info anchor="bottom" id="Find" order="7" />
-      <window_info anchor="bottom" id="Run" order="8" weight="0.5662848" />
-      <window_info anchor="bottom" id="Debug" order="9" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="10" weight="0.25" />
+      <window_info anchor="bottom" id="Messages" order="4" weight="0.69394433" />
+      <window_info anchor="bottom" id="Message" order="5" />
+      <window_info anchor="bottom" id="Find" order="6" weight="0.3289689" />
+      <window_info anchor="bottom" id="Run" order="7" weight="0.63175124" />
+      <window_info anchor="bottom" id="Debug" order="8" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="9" weight="0.25" />
+      <window_info anchor="bottom" id="CMake" order="10" />
       <window_info anchor="bottom" id="Inspection" order="11" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="12" />
       <window_info anchor="right" id="Database" order="0" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="1" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="2" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="3" weight="0.25" />
-    </layout-to-restore>
+    </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
@@ -227,8 +170,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="94">
-          <caret line="89" column="22" selection-start-line="89" selection-start-column="22" selection-end-line="89" selection-end-column="22" />
+        <state relative-caret-position="272">
+          <caret line="16" column="20" lean-forward="true" selection-end-line="735" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
           </folding>
