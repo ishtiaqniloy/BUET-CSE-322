@@ -1,3 +1,0 @@
-C:\Users\Ishti\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\183.4886.39\bin\cmake\win\bin\cmake.exe -E remove -f CMakeFiles\RDT_GBN.dir/objects.a
-C:\PROGRA~2\CODEBL~1\MinGW\bin\ar.exe cr CMakeFiles\RDT_GBN.dir/objects.a @CMakeFiles\RDT_GBN.dir\objects1.rsp
-C:\PROGRA~2\CODEBL~1\MinGW\bin\G__~1.EXE -g   -Wl,--whole-archive CMakeFiles\RDT_GBN.dir/objects.a -Wl,--no-whole-archive  -o RDT_GBN.exe -Wl,--out-implib,libRDT_GBN.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\RDT_GBN.dir\linklibs.rsp
