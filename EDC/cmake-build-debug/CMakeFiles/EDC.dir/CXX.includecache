@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+D:/Drive/L-3 T-2/CSE 322 - Computer Networks Sessional/Assignment 5 - EDC/CSE_322_Assignment5_EDC/EDC/main.cpp
+windows.h
+-
+cstdio
+-
+cstring
+-
+cstdlib
+-
+cmath
+-
+iostream
+-
+vector
+-
+queue
+-
+
