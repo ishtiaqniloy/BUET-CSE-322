@@ -13,7 +13,6 @@
   <component name="ChangeListManager">
     <list default="true" id="cad4e261-e3ec-4271-9b9d-75d35426c86f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -47,8 +46,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="497" column="64" lean-forward="true" selection-start-line="496" selection-start-column="6" selection-end-line="497" selection-end-column="64" />
+            <state relative-caret-position="178">
+              <caret line="496" column="40" lean-forward="true" selection-start-line="496" selection-start-column="40" selection-end-line="496" selection-end-column="40" />
               <folding>
                 <element signature="e#392#412#0" expanded="true" />
               </folding>
@@ -124,7 +123,7 @@
       <updated>1549030481366</updated>
       <workItem from="1549030498556" duration="1866000" />
       <workItem from="1549041240068" duration="5018000" />
-      <workItem from="1549128745377" duration="18343000" />
+      <workItem from="1549128745377" duration="18584000" />
     </task>
     <task id="LOCAL-00001" summary="UPTO task 5 (CRC) done">
       <created>1549137024190</created>
@@ -154,11 +153,18 @@
       <option name="project" value="LOCAL" />
       <updated>1549145106298</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="All tasks done. Further Testing required">
+      <created>1549147360977</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1549147360977</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="25227000" />
+    <option name="totallyTimeSpent" value="25468000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -194,7 +200,8 @@
     <MESSAGE value="upto task 7 done. verification fails on some cases" />
     <MESSAGE value="upto task 8 done. Deserialized data" />
     <MESSAGE value="upto task 9 done. Corrected data and removed check bits" />
-    <option name="LAST_COMMIT_MESSAGE" value="upto task 9 done. Corrected data and removed check bits" />
+    <MESSAGE value="All tasks done. Further Testing required" />
+    <option name="LAST_COMMIT_MESSAGE" value="All tasks done. Further Testing required" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
@@ -202,8 +209,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="497" column="64" lean-forward="true" selection-start-line="496" selection-start-column="6" selection-end-line="497" selection-end-column="64" />
+        <state relative-caret-position="178">
+          <caret line="496" column="40" lean-forward="true" selection-start-line="496" selection-start-column="40" selection-end-line="496" selection-end-column="40" />
           <folding>
             <element signature="e#392#412#0" expanded="true" />
           </folding>
