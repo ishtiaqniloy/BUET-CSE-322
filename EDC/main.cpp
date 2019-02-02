@@ -63,6 +63,21 @@ char *charToBinaryString(char ch){
 
 }
 
+char binaryStringToChar(char *binaryString){
+    char ch = 0;
+
+    for(int i=0; i<8; i++){
+        ch = ch << 1;
+        if(binaryString[i]=='1'){
+            ch |= 1;
+        }
+        //printf("%s\n", charToBinaryString(ch));
+    }
+
+    return ch;
+
+}
+
 void printCharArray(int row, int col, char **array, int COLOR=WHITE, bool **colorArray=NULL){
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
@@ -142,6 +157,9 @@ int main(){
 
     //printf("%s %s %s\n", charToBinaryString('A'), charToBinaryString(16), charToBinaryString(7));
 
+//    char ch = binaryStringToChar("01100001");
+//    printf("%c %d\n", ch, ch);
+
     printf("******Error Detection and Correction Simulation******\n");
 
 ///=============================================================================
@@ -157,6 +175,11 @@ int main(){
     printf("Enter Number of Data Bytes in a Row <m>:");
     scanf("%d", &m);
     printf("m=%d\n", m);
+
+    if(m==0){
+        printf("m Must be Greater than 0\n");
+        exit(0);
+    }
 
     double p;
     printf("Enter Probability <p>:");
@@ -192,7 +215,7 @@ int main(){
     for (int i = 0; i < inputLen; i++) {
         sprintf(binaryString, "%s%s", binaryString, charToBinaryString(inputDataString[i]));
     }
-    printf("\nBinary String:%s\n", binaryString);
+    //printf("\nBinary String:%s\n", binaryString);
 
 
     int numRow = inputLen/m;
@@ -411,7 +434,7 @@ int main(){
 
 
 ///=============================================================================
-///                 8.Correct Data and Remove Checkbits
+///                 9.Correct Data and Remove Checkbits
 ///=============================================================================
 
     printf("\nAttempting to Correct Error Bits:\n");
@@ -471,8 +494,8 @@ int main(){
         }
     }
 
-    printf("\nRemoving Checkbits:\n");
-    printCharArray(numRow, m*8+r, receivedBlockWithCheckBits);
+//    printf("\nRemoving Checkbits:\n");
+//    printCharArray(numRow, m*8+r, receivedBlockWithCheckBits);
 
     char **extractedDataBlock = new char*[numRow];
     for (int i = 0; i < numRow; i++) {
@@ -493,34 +516,70 @@ int main(){
     printCharArray(numRow, m*8, extractedDataBlock);
 
 
+///=============================================================================
+///                 10.Correct Data and Remove Checkbits
+///=============================================================================
+
+    printf("\nOutput Frame: ");
+    char *msg = new char[MAX_MSG_SIZE];
+    strcpy(msg, "");
+
+    for (int i = 0; i < numRow; i++) {
+        for (int j = 0; j < m*8; j+=8) {
+            char *str = new char[10];
+
+            strncpy(str, extractedDataBlock[i]+j, 8);
+            char ch = binaryStringToChar(str);
+            printf("%c", ch);
+            sprintf(msg, "%s%c", msg, ch);
+
+            delete []str;
+        }
+
+    }
+    printf("\n");
+
+    for(int i = strlen(msg)-1; i>=0; i--){
+        if(msg[i] != '~'){
+            break;
+        }
+        msg[i]=0;
+    }
+
+    printf("\nExtracted Message: ");
+    printf("%s\n", msg);
 
 
-
+///=============================================================================
+///                         Free Taken Memory
+///=============================================================================
 
 
 
     delete []inputDataString;
     delete []generatorPolynomial;
     delete []binaryString;
-
-    for (int i = 0; i < numRow; ++i) {
-        delete [] dataBlock[i];
-    }
-    delete []dataBlock;
-
-    for (int i = 0; i < numRow; ++i) {
-        delete [] dataBlockWithCheckBits[i];
-    }
-    delete []dataBlockWithCheckBits;
-
     delete []serializedData;
     delete []dataWithCRC;
     delete []crc;
     delete []receivedFrame;
     delete []errorArray;
     delete []tempCRC;
+    delete []msg;
 
 
+    for (int i = 0; i < numRow; ++i) {
+        delete [] dataBlock[i];
+        delete [] dataBlockWithCheckBits[i];
+        delete [] receivedBlockWithCheckBits[i];
+        delete [] errorBlock[i];
+        delete [] extractedDataBlock[i];
+    }
+    delete []dataBlock;
+    delete []dataBlockWithCheckBits;
+    delete []receivedBlockWithCheckBits;
+    delete []errorBlock;
+    delete []extractedDataBlock;
 
 
     return 0;
