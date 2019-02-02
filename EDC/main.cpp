@@ -24,11 +24,13 @@
 #include <ctime>
 
 #include <iostream>
+#include <random>
 #include <vector>
 #include <queue>
 
 #define MAX_MSG_SIZE 80
 #define MAX_POLYNOMIAL_SIZE 20
+#define DIV_VAL 100000
 
 #define RED 4
 #define GREEN 10
@@ -36,6 +38,10 @@
 #define WHITE 15
 
 using namespace std;
+
+random_device rand_dev;
+default_random_engine generator(rand_dev());
+uniform_int_distribution<int> distribution(0,DIV_VAL);
 
 char *charToBinaryString(char ch){
     char *binaryString = new char[12];
@@ -75,6 +81,10 @@ int getHammingR(int m){
 }
 
 char *calculateCRCBits(int crcDataLen, const char *key, const char *dataWithCRC){
+
+//    printf("Calculating CRC Checksum of: \n");
+//    printf("%s\n", dataWithCRC);
+
     int keySize = strlen(key);
     char *crc = new char[keySize+5];
 
@@ -86,9 +96,11 @@ char *calculateCRCBits(int crcDataLen, const char *key, const char *dataWithCRC)
 
     for (int nextBit = keySize; nextBit <= crcDataLen; nextBit++) {
 
-        for (int i = 0; i < keySize; ++i) {
+        if(crc[0]=='1'){
+            for (int i = 0; i < keySize; ++i) {
 //            printf("i=%d, %c=%d, %c=%d\n", i, crc[i], crc[i], key[i], key[i]);
-            crc[i] = (crc[i]-'0')^(key[i]-'0')+'0';
+                crc[i] = (crc[i]-'0')^(key[i]-'0')+'0';
+            }
         }
 
         ///for next iteration
@@ -97,13 +109,29 @@ char *calculateCRCBits(int crcDataLen, const char *key, const char *dataWithCRC)
         }
         crc[keySize-1] = dataWithCRC[nextBit];
 
+        //crc[keySize] = 0;
+        //printf("crc = %s\n", crc);
     }
 
-    printf("crc = %s\n", crc);
+    printf("\ncrc = %s\n", crc);
 
 
     return crc;
 }
+
+
+double randomGenerator(){
+
+    int idx = distribution(generator);
+    int number = 0;
+    for(int i=0; i<idx; i++){   ///random indexed random number
+        number = distribution(generator);
+    }
+
+    return (1.0*number/DIV_VAL);
+
+}
+
 
 int main(){
 
@@ -125,9 +153,9 @@ int main(){
     scanf("%d", &m);
     printf("m=%d\n", m);
 
-    float p;
+    double p;
     printf("Enter Probability <p>:");
-    scanf("%f", &p);
+    scanf("%lf", &p);
     printf("p=%f\n", p);
 
     char *generatorPolynomial = new char[MAX_POLYNOMIAL_SIZE];
@@ -282,7 +310,7 @@ int main(){
         dataWithCRC[serializedBits+i] = crc[i];
     }
 
-    printf("\nData Bits after Appending CRC Checksum:\n");
+    printf("\nData Bits after Appending CRC Checksum <Sent Frame>:\n");
     for (int i = 0; i < serializedBits; ++i) {
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),WHITE),	std::cout <<  dataWithCRC[i];
     }
@@ -290,6 +318,74 @@ int main(){
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),CYAN),	std::cout <<  dataWithCRC[i];
     }
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),WHITE),	std::cout <<  endl;
+
+
+
+
+///=============================================================================
+///                             5.Toggle
+///=============================================================================
+    char *receivedFrame = new char[crcDataLen+10];
+    strcpy(receivedFrame, dataWithCRC);
+
+    printf("\nReceived Frame:\n");
+    for (int i = 0; i < crcDataLen; i++) {
+        if(randomGenerator() < p){
+            receivedFrame[i] = (char) ((receivedFrame[i]-'0')^1) + '0';    ///toggle
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),RED),	std::cout <<  receivedFrame[i];
+        }
+        else{
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),WHITE),	std::cout <<  receivedFrame[i];
+        }
+
+    }
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),WHITE),	std::cout <<  endl;
+
+
+///=============================================================================
+///                             5.Verify CRC Checksum
+///=============================================================================
+    bool error = false;
+    char *tempCRC = calculateCRCBits(crcDataLen, generatorPolynomial, receivedFrame);
+
+    for (int i = 0; i < crcLen; ++i) {
+        if(tempCRC[i] != '0' ){
+            error = true;
+        }
+    }
+
+    printf("\nResult of CRC Checksum Matching: ");
+    if(error){
+        printf("ERROR DETECTED\n");
+    }
+    else{
+        printf("NO ERROR\n");
+    }
+
+
+
+
+
+
+    delete []inputDataString;
+    delete []generatorPolynomial;
+    delete []binaryString;
+
+    for (int i = 0; i < numRow; ++i) {
+        delete [] dataBlock[i];
+    }
+    delete []dataBlock;
+
+    for (int i = 0; i < numRow; ++i) {
+        delete [] dataBlockWithCheckBits[i];
+    }
+    delete []dataBlockWithCheckBits;
+
+    delete []serializedData;
+    delete []dataWithCRC;
+    delete []crc;
+    delete []receivedFrame;
+    delete []tempCRC;
 
 
 
