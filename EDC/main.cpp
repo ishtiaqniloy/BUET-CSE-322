@@ -410,6 +410,90 @@ int main(){
 
 
 
+///=============================================================================
+///                 8.Correct Data and Remove Checkbits
+///=============================================================================
+
+    printf("\nAttempting to Correct Error Bits:\n");
+    for (int i = 0; i < numRow; i++) {
+        int level = 1;
+        int power = 0;
+        int correctionIdx = 0;
+
+        for (int j = 0; j < m*8+r; j++) {
+            if(j == pow(2, power)-1){
+                power++;
+                int sum = 0;
+                for (int base = j; base < m*8+r; base+=level*2) {
+                    for (int k = base; k < base+level; k++) {
+                        if(k >= m*8+r){
+                            break;
+                        }
+                        else if(receivedBlockWithCheckBits[i][k]=='1'){
+                            sum++;
+                        }
+                    }
+
+                }
+                if(sum%2>0){    ///error found
+                    correctionIdx += j+1;
+                }
+
+                level *= 2;
+
+            }
+
+        }
+
+        correctionIdx--;
+        if(correctionIdx>=0 && correctionIdx< m*8+r){
+            receivedBlockWithCheckBits[i][correctionIdx] = (char) ((receivedBlockWithCheckBits[i][correctionIdx]-'0')^1)+'0';
+            printf("Correcting (%d,%d)\n", i, correctionIdx);
+        }
+
+    }
+
+    printf("\nAfter Attempt to Correct Error Bits:\n");
+    printCharArray(numRow, m*8+r, receivedBlockWithCheckBits, RED, errorBlock);
+
+
+    for (int i = 0; i < numRow; i++) {
+        int power=0;
+        int dataIdx = 0;
+
+        for (int j = 0; j < m*8+r; j++) {
+            if(j == pow(2, power)-1){
+                receivedBlockWithCheckBits[i][j]= 'X';
+                power++;
+                continue;
+            }
+
+        }
+    }
+
+    printf("\nRemoving Checkbits:\n");
+    printCharArray(numRow, m*8+r, receivedBlockWithCheckBits);
+
+    char **extractedDataBlock = new char*[numRow];
+    for (int i = 0; i < numRow; i++) {
+        extractedDataBlock[i] = new char[m*8];
+        for (int j = 0, dataIdx=0; j < m*8+r; j++) {
+            if(receivedBlockWithCheckBits[i][j]=='X'){
+                continue;
+            }
+            else{
+                extractedDataBlock[i][dataIdx] = receivedBlockWithCheckBits[i][j];
+                dataIdx++;
+            }
+        }
+
+    }
+
+    printf("\nData Block After Removing Checkbits:\n");
+    printCharArray(numRow, m*8, extractedDataBlock);
+
+
+
 
 
 
