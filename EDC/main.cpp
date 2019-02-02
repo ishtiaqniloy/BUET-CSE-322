@@ -21,6 +21,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <cmath>
+#include <ctime>
 
 #include <iostream>
 #include <vector>
@@ -28,6 +29,11 @@
 
 #define MAX_MSG_SIZE 80
 #define MAX_POLYNOMIAL_SIZE 20
+
+#define RED 4
+#define GREEN 10
+#define CYAN 11
+#define WHITE 15
 
 using namespace std;
 
@@ -51,20 +57,53 @@ char *charToBinaryString(char ch){
 
 }
 
-void printBooleanArray(int row, int col, bool **array){
+void printCharArray(int row, int col, char **array){
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
-            if(array[i][j]){
-                printf("1");
-            }
-            else{
-                printf("0");
-            }
+            printf("%c", array[i][j]);
         }
         printf("\n");
     }
 }
 
+int getHammingR(int m){
+    for(int r=0; ; r++){
+        if(pow(2, r) >= m+r+1){
+            return r;
+        }
+    }
+}
+
+char *calculateCRCBits(int crcDataLen, const char *key, const char *dataWithCRC){
+    int keySize = strlen(key);
+    char *crc = new char[keySize+5];
+
+    ///initialize
+    for (int i = 0; i < keySize; ++i) {
+        crc[i] = dataWithCRC[i];
+//        printf("INIT: %c=%d, %c=%d\n", crc[i], crc[i], key[i], key[i]);
+    }
+
+    for (int nextBit = keySize; nextBit <= crcDataLen; nextBit++) {
+
+        for (int i = 0; i < keySize; ++i) {
+//            printf("i=%d, %c=%d, %c=%d\n", i, crc[i], crc[i], key[i], key[i]);
+            crc[i] = (crc[i]-'0')^(key[i]-'0')+'0';
+        }
+
+        ///for next iteration
+        for (int i = 0; i < keySize-1; ++i) {
+            crc[i] = crc[i+1];
+        }
+        crc[keySize-1] = dataWithCRC[nextBit];
+
+    }
+
+    printf("crc = %s\n", crc);
+
+
+    return crc;
+}
 
 int main(){
 
@@ -99,7 +138,7 @@ int main(){
 
 
 ///=============================================================================
-///                                 Padding
+///                                 1.Padding
 ///=============================================================================
     int inputLen = strlen(inputDataString);
     for (int i = inputLen; i%m!=0 ; i++) {
@@ -111,7 +150,7 @@ int main(){
 
 
 ///=============================================================================
-///                         Generating Data Block
+///                         2.Generating Data Block
 ///=============================================================================
     inputLen = strlen(inputDataString);
 
@@ -124,29 +163,133 @@ int main(){
 
 
     int numRow = inputLen/m;
-    bool **dataBlock = new bool* [numRow];
+    char **dataBlock = new char* [numRow];
 
-    int k = 0;
+    for (int i = 0, k = 0; i < numRow; i++) {
+        dataBlock[i] = new char[m*8];
+        for (int j = 0; j < m*8; j++, k++) {
+            dataBlock[i][j] = binaryString[k];
+        }
+    }
+
+    printf("\nData Block <ASCII Code of m Characters Per Row>:\n");
+    printCharArray(numRow, m * 8, dataBlock);
+
+
+
+///=============================================================================
+///                     3.Adding Check Bits (EVEN PARITY)
+///=============================================================================
+    int r = getHammingR(m*8);
+    char **dataBlockWithCheckBits = new char* [numRow];
+
     for (int i = 0; i < numRow; i++) {
-        dataBlock[i] = new bool[m*8];
+        dataBlockWithCheckBits[i] = new char[m*8+r];
+        int power=0;
+        int dataIdx = 0;
 
-        for (int j = 0; j < m*8; j++) {
-            if(binaryString[k] == '0'){
-                dataBlock[i][j] = false;
+        for (int j = 0; j < m*8+r; j++) {
+            if(j == pow(2, power)-1){
+                dataBlockWithCheckBits[i][j]= 'X';
+                power++;
+                continue;
             }
             else{
-                dataBlock[i][j] = true;
+                dataBlockWithCheckBits[i][j] = dataBlock[i][dataIdx];
+                dataIdx++;
             }
-            k++;
+
         }
 
     }
 
-    printf("\nData Block <ASCII Code of m Characters Per Row>:\n");
-    printBooleanArray(numRow, m*8, dataBlock);
+    printf("\nDataBlock With Checkbit Space Created:\n");
+    printCharArray(numRow, m*8+r, dataBlockWithCheckBits);
+
+
+    printf("\nDataBlock With Checkbits Added:\n");
+    for (int i = 0; i < numRow; i++) {
+        int level=1;
+
+        for (int j = 0; j < m*8+r; j++) {
+            if(dataBlockWithCheckBits[i][j]=='X'){
+                int sum = 0;
+                for (int base = j; base < m*8+r; base+=level*2) {
+                    for (int k = base; k < base+level; k++) {
+                        if(k >= m*8+r){
+                            break;
+                        }
+                        else if(dataBlockWithCheckBits[i][k]=='1'){
+                            sum++;
+                        }
+                    }
+
+                }
+                dataBlockWithCheckBits[i][j] = (char)(sum%2)+'0';
+
+                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),GREEN),	std::cout <<  dataBlockWithCheckBits[i][j];
+
+                level *= 2;
+
+            }
+            else{
+                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),WHITE),	std::cout <<  dataBlockWithCheckBits[i][j];
+            }
+
+        }
+        cout << endl;
+
+    }
 
 
 
+///=============================================================================
+///                             4.Serialize
+///=============================================================================
+
+    int serializedBits = numRow*(m*8+r);
+    char *serializedData = new char[serializedBits+10]; //10 bit extra for safety
+
+    for (int i = 0, dataIdx = 0; i < m * 8 + r; i++) {
+        for (int j = 0; j < numRow; j++, dataIdx++) {
+            serializedData[dataIdx] = dataBlockWithCheckBits[j][i];
+        }
+    }
+    serializedData[serializedBits] = 0;
+
+    printf("\nData Bits after Column-wise Serialization:\n");
+    printf("%s\n", serializedData);
+
+
+
+
+///=============================================================================
+///                             5.CRC Checksum
+///=============================================================================
+    int crcLen = strlen(generatorPolynomial)-1;
+
+    int crcDataLen = serializedBits+crcLen;
+    char *dataWithCRC = new char[crcDataLen+10];
+
+    strcpy(dataWithCRC, serializedData);
+    for (int i = serializedBits; i < crcDataLen; ++i) {
+        dataWithCRC[i] = '0';
+    }
+    dataWithCRC[crcDataLen] = 0;
+
+    char *crc = calculateCRCBits(crcDataLen, generatorPolynomial, dataWithCRC);
+    for (int i = 0; i < crcLen; ++i) {
+        dataWithCRC[serializedBits+i] = crc[i];
+    }
+
+    printf("\nData Bits after Appending CRC Checksum:\n");
+    for (int i = 0; i < serializedBits; ++i) {
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),WHITE),	std::cout <<  dataWithCRC[i];
+    }
+    for (int i = serializedBits; i < crcDataLen; ++i) {
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),CYAN),	std::cout <<  dataWithCRC[i];
+    }
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),WHITE),	std::cout <<  endl;
 
 
 
