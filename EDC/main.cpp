@@ -63,12 +63,17 @@ char *charToBinaryString(char ch){
 
 }
 
-void printCharArray(int row, int col, char **array){
+void printCharArray(int row, int col, char **array, int COLOR=WHITE, bool **colorArray=NULL){
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
-            printf("%c", array[i][j]);
+            if(colorArray==NULL || !colorArray[i][j]){
+                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),WHITE),	std::cout <<  array[i][j];
+            }
+            else{
+                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),COLOR),	std::cout <<  array[i][j];
+            }
         }
-        printf("\n");
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),WHITE),	std::cout <<  endl;
     }
 }
 
@@ -231,8 +236,8 @@ int main(){
 
     }
 
-    printf("\nDataBlock With Checkbit Space Created:\n");
-    printCharArray(numRow, m*8+r, dataBlockWithCheckBits);
+//    printf("\nDataBlock With Checkbit Space Created:\n");
+//    printCharArray(numRow, m*8+r, dataBlockWithCheckBits);
 
 
     printf("\nDataBlock With Checkbits Added:\n");
@@ -323,19 +328,22 @@ int main(){
 
 
 ///=============================================================================
-///                             5.Toggle
+///                             6.Toggle
 ///=============================================================================
     char *receivedFrame = new char[crcDataLen+10];
+    bool *errorArray = new bool[crcDataLen+10];
     strcpy(receivedFrame, dataWithCRC);
 
     printf("\nReceived Frame:\n");
     for (int i = 0; i < crcDataLen; i++) {
         if(randomGenerator() < p){
             receivedFrame[i] = (char) ((receivedFrame[i]-'0')^1) + '0';    ///toggle
+            errorArray[i] = true;
             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),RED),	std::cout <<  receivedFrame[i];
         }
         else{
             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),WHITE),	std::cout <<  receivedFrame[i];
+            errorArray[i] = false;
         }
 
     }
@@ -343,7 +351,7 @@ int main(){
 
 
 ///=============================================================================
-///                             5.Verify CRC Checksum
+///                             7.Verify CRC Checksum
 ///=============================================================================
     bool error = false;
     char *tempCRC = calculateCRCBits(crcDataLen, generatorPolynomial, receivedFrame);
@@ -361,6 +369,46 @@ int main(){
     else{
         printf("NO ERROR\n");
     }
+
+
+
+///=============================================================================
+///                 8.Remove CRC Checksum and Deserialize
+///=============================================================================
+    receivedFrame[serializedBits] = 0;
+
+//    printf("\nAfter Removing CRC Checksum:\n");
+//    for (int i = 0; i < serializedBits; i++) {
+//        if(errorArray[i]){
+//            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),RED),	std::cout <<  receivedFrame[i];
+//        }
+//        else{
+//            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),WHITE),	std::cout <<  receivedFrame[i];
+//        }
+//
+//    }
+//    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),WHITE),	std::cout <<  endl;
+
+    char **receivedBlockWithCheckBits = new char* [numRow];
+    bool **errorBlock = new bool* [numRow];
+    for (int i = 0; i < numRow; i++) {
+        receivedBlockWithCheckBits[i] = new char[m*8+r];
+        errorBlock[i] = new bool[m*8+r];
+    }
+
+    for (int i = 0, dataIdx = 0; i < m * 8 + r; i++) {
+        for (int j = 0; j < numRow; j++, dataIdx++) {
+            receivedBlockWithCheckBits[j][i] = receivedFrame[dataIdx];
+            errorBlock[j][i] = errorArray[dataIdx];
+
+        }
+    }
+
+    printf("\nData Bits after Removing CRC Checksum <Deserialized>:\n");
+    printCharArray(numRow, m*8+r, receivedBlockWithCheckBits, RED, errorBlock);
+
+
+
 
 
 
@@ -385,6 +433,7 @@ int main(){
     delete []dataWithCRC;
     delete []crc;
     delete []receivedFrame;
+    delete []errorArray;
     delete []tempCRC;
 
 

@@ -12,9 +12,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cad4e261-e3ec-4271-9b9d-75d35426c86f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/Ishti.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../offline 5 specification.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/../offline 5 specification.pdf" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -48,8 +48,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="223">
-              <caret line="292" column="4" selection-start-line="292" selection-start-column="4" selection-end-line="292" selection-end-column="4" />
+            <state relative-caret-position="204">
+              <caret line="375" column="21" selection-start-line="375" selection-start-column="21" selection-end-line="375" selection-end-column="21" />
               <folding>
                 <element signature="e#392#412#0" expanded="true" />
               </folding>
@@ -125,12 +125,27 @@
       <updated>1549030481366</updated>
       <workItem from="1549030498556" duration="1866000" />
       <workItem from="1549041240068" duration="5018000" />
-      <workItem from="1549128745377" duration="8210000" />
+      <workItem from="1549128745377" duration="13984000" />
     </task>
+    <task id="LOCAL-00001" summary="UPTO task 5 (CRC) done">
+      <created>1549137024190</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1549137024190</updated>
+    </task>
+    <task id="LOCAL-00002" summary="upto task 7 done. verification fails on some cases">
+      <created>1549141221390</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1549141221390</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="15094000" />
+    <option name="totallyTimeSpent" value="20868000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -141,13 +156,13 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.22258593" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.29623568" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39934534" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Database Changes" order="7" />
-      <window_info anchor="bottom" id="Messages" order="8" weight="0.5450082" />
+      <window_info active="true" anchor="bottom" id="Messages" order="8" visible="true" weight="0.22422259" />
       <window_info anchor="bottom" id="Terminal" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="11" />
@@ -161,14 +176,19 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="UPTO task 5 (CRC) done" />
+    <MESSAGE value="upto task 7 done. verification fails on some cases" />
+    <option name="LAST_COMMIT_MESSAGE" value="upto task 7 done. verification fails on some cases" />
+  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="292" column="4" selection-start-line="292" selection-start-column="4" selection-end-line="292" selection-end-column="4" />
+        <state relative-caret-position="204">
+          <caret line="375" column="21" selection-start-line="375" selection-start-column="21" selection-end-line="375" selection-end-column="21" />
           <folding>
             <element signature="e#392#412#0" expanded="true" />
           </folding>
