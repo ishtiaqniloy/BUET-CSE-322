@@ -1,0 +1,10 @@
+Assignment 1: 
+1. Implement Server States. 
+2. Input Format
+3. Multiple Recipents
+4. Attachment
+
+Assignment 2: 
+1. POST METHOD WHole
+2. File proper handling
+3. socket closing
