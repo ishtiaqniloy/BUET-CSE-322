@@ -22,3 +22,9 @@ Specifications are given in "ns2-project.pdf"
 Report: "NS2_Report.pdf"  
 Collaborators: Abdullah Al Ishtiaq (https://github.com/ishtiaqniloy), Shashata Sawmya (https://github.com/pythonLoader)  
 
+## CSE_322_RDT
+Reliable data transmission protocol implemented and simulated in C++  
+Specifications are given in "Offline_Specification.pdf"  
+
+
+
