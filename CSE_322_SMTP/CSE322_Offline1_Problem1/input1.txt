@@ -1,0 +1,22 @@
+HELO DESKTOP1
+MAIL FROM:shashata003@gmail.com
+RCPT TO:ishtiaq_niloy@live.com
+RCPT TO:1505089.ss@ugrad.cse.buet.ac.bd
+DATA
+Subject: Sample
+From: abcd@gmail.com
+To: ishtiaq.niloy@gmail.com
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary=sep
+--sep
+
+MSG BODY
+ANOTHER LINE
+BYE
+--sep
+Content-type: text/plain; charset=us-ascii
+
+This is explicitly typed plain ASCII text
+It DOES end with a linebreak
+.
+QUIT

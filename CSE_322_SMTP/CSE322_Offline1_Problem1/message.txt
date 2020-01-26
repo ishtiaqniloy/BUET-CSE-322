@@ -1,0 +1,39 @@
+HELO DESKTOP1
+MAIL FROM:shashata003@gmail.com
+RCPT TO:arpitasaha1996@gmail.com
+DATA
+From: shashata003@gmail.com
+To: arpitasaha1996@gmail.com
+Subject: Sample message 
+MIME-Version: 1.0 
+Content-type: multipart/mixed; boundary="c2ltcGxlIGJvdW5kYXJ5" 
+
+This is the preamble.  It is to be ignored, though it 
+is a handy place for mail composers to include an 
+explanatory note to non-MIME compliant readers. 
+
+--c2ltcGxlIGJvdW5kYXJ5 
+
+This is implicitly typed plain ASCII text. 
+It does NOT end with a linebreak. 
+
+--c2ltcGxlIGJvdW5kYXJ5
+Content-type: text/plain; charset=us-ascii 
+
+ This is explicitly typed plain ASCII text. 
+ It DOES end with a linebreak.
+ 
+--c2ltcGxlIGJvdW5kYXJ5
+Content-Type: text/csv; name="123_ARIADNA-10-2017.csv"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+
+Um96cG9jesSZY2llIHJvem1vd3k7TnVtZXIgxbpyw7NkxYJvd3k7QWRyZXMgbnVtZXJ1IMW6csOz
+ZMWCb3dlZ287TnVtZXIgZG9jZWxvd3k7Um9kemFqIHBvxYLEhWN6ZW5pYTtDemFzIHBvxYLEhWN6
+ZW5pYTtLd290YSBuZXR0bw0KMjAxNy0xMS0xMSAxMToxMToxMTsxMTExMTExMTExMTvFgcOzZMW6
+LCB1bC4gMTExMTExMTExMTEgMi82OzExMTExMTExMTExO2tvbcOzcmtvd2U7MDowMDozNjswLDEw
+MDAwMA0K 
+
+--c2ltcGxlIGJvdW5kYXJ5--
+ 
+.
