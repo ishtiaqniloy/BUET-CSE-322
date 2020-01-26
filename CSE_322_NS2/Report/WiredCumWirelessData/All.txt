@@ -1,0 +1,10 @@
+throughput: 323506.52 delay: 16.24659 send packet: 1212.00 received packet: 1132.00 drop packet: 0.00 delivery ratio: 93.40 drop ratio: 0.00 time: 29.08825 total_retrnsmit: 1132 \\
+throughput: 323506.52 delay: 16.24659 send packet: 1212.00 received packet: 1132.00 drop packet: 0.00 delivery ratio: 93.40 drop ratio: 0.00 time: 29.08825 total_retrnsmit: 1132 \\
+throughput: 323506.52 delay: 16.24659 send packet: 1212.00 received packet: 1132.00 drop packet: 0.00 delivery ratio: 93.40 drop ratio: 0.00 time: 29.08825 total_retrnsmit: 1132 \\
+throughput: 323506.52 delay: 16.24659 send packet: 1212.00 received packet: 1132.00 drop packet: 0.00 delivery ratio: 93.40 drop ratio: 0.00 time: 29.08825 total_retrnsmit: 1132 \\
+throughput: 323506.52 delay: 16.24659 send packet: 1212.00 received packet: 1132.00 drop packet: 0.00 delivery ratio: 93.40 drop ratio: 0.00 time: 29.08825 total_retrnsmit: 1132 \\
+throughput: 323506.52 delay: 16.24659 send packet: 1212.00 received packet: 1132.00 drop packet: 0.00 delivery ratio: 93.40 drop ratio: 0.00 time: 29.08825 total_retrnsmit: 1132 \\
+throughput: 323506.52 delay: 16.24659 send packet: 1212.00 received packet: 1132.00 drop packet: 0.00 delivery ratio: 93.40 drop ratio: 0.00 time: 29.08825 total_retrnsmit: 1132 \\
+throughput: 323506.52 delay: 16.24659 send packet: 1212.00 received packet: 1132.00 drop packet: 0.00 delivery ratio: 93.40 drop ratio: 0.00 time: 29.08825 total_retrnsmit: 1132 \\
+throughput: 323506.52 delay: 16.24659 send packet: 1212.00 received packet: 1132.00 drop packet: 0.00 delivery ratio: 93.40 drop ratio: 0.00 time: 29.08825 total_retrnsmit: 1132 \\
+throughput: 323506.52 delay: 16.24659 send packet: 1212.00 received packet: 1132.00 drop packet: 0.00 delivery ratio: 93.40 drop ratio: 0.00 time: 29.08825 total_retrnsmit: 1132 \\

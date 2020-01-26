@@ -1,0 +1,190 @@
+\documentclass{article}[12pt]
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usepackage{color}
+\usepackage{subfiles}
+\usepackage[T1]{fontenc}
+\usepackage{titlepic}
+\usepackage{amssymb}
+\graphicspath{ {figures/} }
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{algorithm2e}
+\usepackage{algorithmic}
+\usepackage{forest}
+\usepackage{commath}
+\usepackage[section]{placeins}
+
+\title{\Huge{Network Simulator-2}}
+\author{Shashata Sawmya \\
+        \textbf{Student Id. : 1505089} 
+        \and 
+        Abdullah Al Ishtiaq \\
+        \textbf{Student Id. : 1505080}}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+\vspace{4cm}
+
+\begin{figure}[h!]
+\centering
+    \includegraphics[width = 0.25\textwidth]{Pictures/logoBUET.png}
+\end{figure}
+\begin{center}
+\vspace{.5cm}
+
+\Large{Department of Computer Science and Engineering \\
+    Bangladesh University of Engineering and Technology \\
+    (BUET) \\
+    Dhaka - 1000 }
+
+\end{center}
+\newpage
+
+\tableofcontents
+\newpage
+
+\listoffigures
+\newpage
+
+\section{Introduction}
+    NS2 is an open-source event-driven simulator designed specifically for research in computer communication networks. In this experiment we have to vary different parameters such as number of nodes, number of flows, number of packets per second, speed of nodes and measure some metrics and plot them in some graphs. 
+    We also had to modify some mechanisms of tcp and/or routing, mac layer protocol, queue control mechanism etc and compare our modified version of the ns2 with the original version through the metrics and generated graph.
+    
+\section{Simulated Networks}
+\begin{itemize}
+    \item Wired network using TCP in Ring topology
+    \item Wireless 802.11 (Mobile) network using TCP in Random Topology
+    \item \textcolor{blue}{Wired-Cum-Wireless Network}
+    \item \textcolor{blue}{LTE (4G)}
+    \item \textcolor{blue}{WiMax}
+\end{itemize}
+    
+\section{Parameters and Metrics}
+    \subsection{Parameters}
+        \begin{enumerate}
+            \item Number of nodes (20, 40, 60, 80, and 100)
+            \item Number of flows  (10, 20, 30, 40, and 50)
+            \item Number of packets per second  (100, 200, 300, 400, and 500)
+            \item Speed of nodes (5 m/s, 10 m/s, 15 m/s, 20 m/s, and 25 m/s) [for 802.11 mobile nodes]
+            
+        \end{enumerate}
+
+    \subsection{Metrics}
+        \begin{enumerate}
+            \item Network Throughput
+            \item End-to-End Delay
+            \item Packet Delivery Ratio 
+            \item Packet Drop Ratio
+            \item Energy Consumption [for 802.11 mobile nodes]
+            \item \textcolor{blue}{Average Congestion Window}
+            \item \textcolor{blue}{Per-Node Throughput}
+        \end{enumerate}
+
+\section{Bonus Tasks}
+    We have attempted 3 bonus tasks as instructed in the assignment. They are: 
+    \begin{enumerate}
+        \item Cross transmission of packets [Simulation and Statistics Building]
+        \item Simulating LTE(4G) [Simulation Only] and WiMax network [Simulation and Statistics Building]
+        \item Measuring 2 extra metrics
+            \begin{itemize}
+                \item Average Congestion Window
+                \item Per-node Throughput
+            \end{itemize}
+    \end{enumerate}
+
+\section{Modifications}
+\label{sec:mod}
+    We have done several modifications in the simulator and run our code in the modified version. The modifications are listed below.
+
+    \begin{description}
+        \item[\textcolor{blue}{1. Congestion Control:}]
+    TCP uses slow-start algorithm for congestion control. In congestion avoidance phase after the congestion window has crossed threshold value, it increases window by $1/{cwnd\_}$ . In our case we have formulated a new mechanism of increasing the congestion window in congestion avoidance phase. We have increased the congestion window when the expression ${awnd\_ \times wnd\_const\_ \times srtt}$ is greater than the current congestion window.
+    where $awnd\_$ is averaged congestion window
+    $wnd\_const\_$ is packets per RTT
+    $srtt$ is smoothed round trip time
+    
+    \item[\textcolor{blue}{2. RTT Mechanism:}]
+    The current unbounded retransmit timeout calculation uses smoothed round trip time and rtt variation variables $srtt\_$ and $rttvar\_$. the formula for the calculation of srtt and rttvar is given below:
+    
+    $$srtt(k+1) = \frac{7}{8} srtt(k) + \frac{1}{8} rtt(k+1)$$
+    and $$rttvar(k+1) = \frac{3}{4} rttvar(k) + \frac{1}{4} \abs{\delta} $$ 
+    where $rtt(k+1) = $ new rtt sample
+    \\
+    and $\delta = rtt(k+1) - srtt(k)$
+    \\
+    \\
+    It is changed as below:
+    $$srtt(k+1) = \frac{15}{16} srtt(k) + \frac{1}{16} rtt(k+1)$$
+    and $$rttvar(k+1) = \frac{7}{8} rttvar(k) + \frac{1}{8} \abs{\delta} $$ 
+    
+    We have changed the value of T$\_$SRTT$\_$BITS and T$\_$RTTVAR$\_$BITS to get this effect
+    
+    \item[\textcolor{blue}{3. RTO Timeout change:}]
+    The function rtt$\_$timeout is changed to enforce the value of rtt$\_$update to be taken for calculating timeout value as
+    $$timeout = t\_rtxcur\_ \times t\_backoff\_$$
+    
+    
+    \item[\textcolor{blue}{4. Changing the gain of Omni-antenna:}]
+    We have changed the Transmission and Receiving gain Gt$\_$ and Gr$\_$ from 1.0 to 2.0 for wireless 802.11 protocol simulation
+    
+    \item[\textcolor{blue}{5. AODV Change:}] The changes done in AODV.h file are given below:
+        \begin{enumerate}
+            \item $ACTIVE\_ROUTE\_TIMEOUT$ is changed from 10 to 8. As AODV is generally used for wireless nodes, this change will prune inaccessible routes faster in case of link failures.
+            
+            \item  $RREQ\_RETRIES$ is changed from 3 to 5 and $MAX\_RREQ\_TIMEOUT$ is changed from 10.0 to 6.0. This change will make the nodes to try to retry more times in Route Discovery phase. This helps to find mobile nodes better.
+            
+            \item $TTL\_START$, $TTL\_THRESHOLD$ and $TTL\_INCREMENT$ is changed from 5, 7, 2 to 3, 9, 3 respectively. AODV implements ring search in Route Discovery Phase. To limit the flooding in the network, at first we are searching with small TTL values and then gradually expanding our search. This should find routes to nodes which are close faster than before. 
+        
+        \end{enumerate}
+        
+    
+    \item[\textcolor{blue}{6. SFQ Change:}]
+        We have used Stochastic Fair Queue i.e. SFQ instead of Droptail queue in wired network simulation and we have changed the number of buckets for the hash mechanism which have effected the variable \textbf{fairshare}.
+        The buckets$\_$ variable have been changed from 16 to 25 in this case. 
+    
+    
+    \end{description}
+
+\newpage
+\section{Comparison} 
+\label{sec:com}
+    
+    \subsection{Wired}
+        \subfile{WiredGraph.tex}
+    
+    \newpage
+    \newpage
+    \newpage
+    \subsection{Wireless 802.11 (Mobile)}
+        \subfile{802.11MGraph.tex}
+
+\newpage
+\section{Bonus Simulation Data}
+
+    \subsection{Cross Transmission}
+        The Average statistics found in 10 iterations of the wired-cum-wireless network simulation is shown in Table \ref{tab:1}. \\
+        \subfile{WiredCumWirelessData/TCP.tex}
+    
+    \subsection{LTE}
+        The simulation of LTE (4G) network was done and network animator view is attached of the simulation. 
+        \subfile{LTE.tex}
+    \newpage
+    \subsection{WiMax}
+        The statistics found in simulation of WiMax network is shown in \ref{tab:2} \\
+        \subfile{wimax.tex}
+
+\section{Summary}
+    We have performed the modifications mentioned in Section \ref{sec:mod} with intuition to improve results of simulation and measured several metrics of network before and after the modifications. But in most of the cases, it is prominent from the graphs in Section \ref{sec:com} that the results of the measured metrics are degrading. \\
+    However, the average congestion window has increased after the modifications which can be identified as an improvement. Also in some cases of Wireless 802.11 network, Package Delivery Ratio has slightly increased within particular range. \\
+    Finally, simulations of Wired-Cum-Wireless network, WiMax network and  LTE (4G) network are also done and statistics are built for the first two of those.
+    
+
+\end{document}

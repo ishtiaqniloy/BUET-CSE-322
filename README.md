@@ -16,3 +16,9 @@ DVR protocol implemented in C++
 Specifications are given in "Assigment2-DVR.pdf"  
 ***This assignment is partially incomplete***
 
+## CSE_322_NS2
+NS2 assignment of simulating and changing various protocols  
+Specifications are given in "ns2-project.pdf"  
+Report: "NS2_Report.pdf"  
+Collaborators: Abdullah Al Ishtiaq (https://github.com/ishtiaqniloy), Shashata Sawmya (https://github.com/pythonLoader)  
+
