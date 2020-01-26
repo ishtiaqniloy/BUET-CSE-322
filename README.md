@@ -26,5 +26,7 @@ Collaborators: Abdullah Al Ishtiaq (https://github.com/ishtiaqniloy), Shashata S
 Reliable data transmission protocol implemented and simulated in C++  
 Specifications are given in "Offline_Specification.pdf"  
 
-
+## CSE_322_EDC
+Error Detection using CRC Checksum and Error Correction using Hamming Distance. Implemented in C++  
+Specifications are given in "Offline 5 Specification.pdf"  
 
